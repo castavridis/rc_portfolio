@@ -1,0 +1,26 @@
+# Dependency directories
+node_modules/
+
+# Next.js build output
+.next/
+
+# Next.js specific files
+.swc/
+.env.local
+.env.*.local
+.DS_Store
+.npm/
+.yarn/
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor-specific files
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Vercel deployment files (if applicable)
+.vercel/
