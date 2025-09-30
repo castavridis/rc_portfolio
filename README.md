@@ -12,7 +12,7 @@
 * Connect repository to Vercel projects
 * Import git repo to Vercel
 
-### Steps
+### Initialization Steps
 * git init rc_portfolio
 * cd rc_portfolio
 * pnpm init
@@ -27,3 +27,6 @@
   * Add "ignoreDuringBuilds: true" to next.config.js
   * Add "ignores": \['.next/'\] to eslint.config.js (.eslintignore is deprecated)
   * Add rule for "next-env.d.ts" to [supress /// error](https://stackoverflow.com/questions/74826402/do-not-use-a-triple-slash-reference-for)
+
+## Notes
+- Public files are accessed without leading /public/

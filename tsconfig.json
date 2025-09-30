@@ -28,8 +28,13 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
+  "baseUrl": "src/",
+  "paths": {
+    "@/styles/*": ["styles/*"],
+    "@/components/*": ["components/*"]
+  }
 }
