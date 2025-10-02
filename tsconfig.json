@@ -32,9 +32,10 @@
   "exclude": [
     "node_modules"
   ],
-  "baseUrl": "src/",
+  "baseUrl": ".",
   "paths": {
-    "@/styles/*": ["styles/*"],
-    "@/components/*": ["components/*"]
+    "@/*": ["./src/*"],
+    "@/styles/*": ["./src/styles/*"],
+    "@/components/*": ["./src/components/*"]
   }
 }

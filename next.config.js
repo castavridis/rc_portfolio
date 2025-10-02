@@ -4,4 +4,7 @@ export default {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
+  turbopack: {
+    root: "/Users/cstavridis/Git/rc_portfolio"
+  }
 }
