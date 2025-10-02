@@ -4,7 +4,7 @@
  * Based on MediaPipe CodePen demo
  * https://codepen.io/mediapipe-preview/pen/zYamdVd?editors=1000
  */
-
+import Tesseract, { createWorker } from 'tesseract.js'
 import { GestureRecognizer, FilesetResolver, DrawingUtils, GestureRecognizerResult } from '@mediapipe/tasks-vision'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
@@ -12,13 +12,20 @@ const VIDEO_HEIGHT = "720px"
 const VIDEO_WIDTH = "960px"
 
 export default function GestureRecognizerTest () {
-  
   const [isLoading, setIsLoading] = useState(true)
   const [gestureRecognizer, setGestureRecognizer] = useState<GestureRecognizer>()
   const [lastVideoTime, setLastVideoTime] = useState(-1)
   
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
+  const workerRef = useRef<Tesseract.Worker>(null)
+
+  const initTesseract = useCallback(async () => {
+    const worker = await createWorker('eng')
+    if (worker) {
+      workerRef.current = worker
+    }
+  }, [])
 
   const initGestureRecognizer = useCallback(async () => {
     try {
@@ -61,6 +68,18 @@ export default function GestureRecognizerTest () {
     window.requestAnimationFrame(() => predictWebcam(video))
   }, [gestureRecognizer, lastVideoTime])
 
+  const recognizeText = useCallback(async () => {
+    if (!workerRef.current || !canvasRef.current) {
+      console.warn('Worker or canvas not ready yet')
+      return
+    }
+    const capture = canvasRef.current.toDataURL()
+    const ret = await workerRef.current.recognize(capture)
+    if (ret.data.text) {
+      console.log(ret.data.text)
+    }
+  }, [canvasRef, workerRef])
+
   function drawResults (results: GestureRecognizerResult) {
     const canvas: HTMLCanvasElement = canvasRef.current
     if (!canvas) return
@@ -74,6 +93,7 @@ export default function GestureRecognizerTest () {
       for (const gestures of results.gestures) {
         for (const gesture of gestures) {
           if (gesture.categoryName !== "Pointing_Up") {
+            recognizeText()
             canvasCtx.clearRect(0, 0, canvas.width, canvas.height)
           }
           else {
@@ -129,6 +149,15 @@ export default function GestureRecognizerTest () {
   useEffect(() => {
     initGestureRecognizer()
   }, [initGestureRecognizer])
+
+  useEffect(() => {
+    initTesseract()
+    return () => {
+      if (workerRef.current) {
+        workerRef.current.terminate()
+      }
+    }
+  }, [initTesseract])
 
   return (
     isLoading 
