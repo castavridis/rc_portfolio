@@ -10,6 +10,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { useSpeech } from 'react-text-to-speech'
+import { Camera } from 'lucide-react'
 
 const VIDEO_HEIGHT = "720px"
 const VIDEO_WIDTH = "960px"
@@ -213,34 +214,35 @@ export default function GestureRecognizerTest () {
   }, [initTesseract])
 
   return (
-    isLoading 
-      ? <div>
-          Loading Phonics Toy...
-        </div>
-      : <div>
-          <h1>Phonics Toy</h1>
-          <div className="flex items-center">
-            <h2 className="mb-0">1. Enable Webcam</h2>
-            <button className="rounded-md block p-3 ml-4" onClick={handleButtonClick}>Enable Webcam</button>
+    <div>
+      <h1 className="mb-2">Phonics Toy</h1>
+      {
+        isLoading 
+        ? <div>
+            Loading Phonics Toy...
           </div>
-          <h2>Goals</h2>
-          <ul>
-            <li>Attempt to draw letters using 👆 your pointer finger</li>
-            <li>When you're ready to check your letter, close your fist ✊</li>
-          </ul>
-          <div className="relative">
-            <video className="scale-x-[-1]" ref={videoRef} autoPlay playsInline style={{ opacity: 0.25 }} />
-            <canvas className="scale-x-[-1]" ref={canvasRef} width="1280" height="720" style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              pointerEvents: "none",
-              zIndex: 1,
-            }}></canvas>
-            <div className="absolute top-[50%] left-[50%] z-10 opacity-0 translate-x-[-50%] translate-y-[-50%] text-5xl" ref={recognizedTextRef}>
-              {recognizedText}
+        : <div>
+            <button className="rounded-md p-3 border-2 border-white flex items-center mb-2" onClick={handleButtonClick}><Camera className="mr-2" /> Enable Webcam</button>
+            <h2>Goals</h2>
+            <ul className="list-inside list-disc">
+              <li className="list-item">Attempt to draw letters using 👆 your pointer finger</li>
+              <li className="list-item">When you're ready to check your letter, close your fist ✊</li>
+            </ul>
+            <div className="relative">
+              <video className="scale-x-[-1]" ref={videoRef} autoPlay playsInline style={{ opacity: 0.25 }} />
+              <canvas className="scale-x-[-1]" ref={canvasRef} width="1280" height="720" style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                pointerEvents: "none",
+                zIndex: 1,
+              }}></canvas>
+              <div className="absolute top-[50%] left-[50%] z-10 opacity-0 translate-x-[-50%] translate-y-[-50%] text-5xl" ref={recognizedTextRef}>
+                {recognizedText}
+              </div>
             </div>
           </div>
-        </div>
+      }
+    </div>
   )
 }
