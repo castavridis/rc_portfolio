@@ -90,9 +90,23 @@ export default function GestureRecognizerTest () {
     }
   }, [])
 
-  const speakText = useCallback(() => {
-
-  }, [recognizedText])
+  // Via Cursor
+  function getMirroredDataUrl(format = 'image/png', quality = 1.0) {
+    const mirroredCanvas = document.createElement('canvas');
+    mirroredCanvas.width = canvasRef.current.width;
+    mirroredCanvas.height = canvasRef.current.height;
+    const mirroredCtx = mirroredCanvas.getContext('2d');
+    
+    // Flip horizontally
+    mirroredCtx.save();
+    mirroredCtx.translate(canvasRef.current.width, 0);
+    mirroredCtx.scale(-1, 1);
+    mirroredCtx.drawImage(canvasRef.current, 0, 0);
+    mirroredCtx.restore();
+    
+    // Convert to dataUrl with custom format and quality
+    return mirroredCanvas.toDataURL(format, quality);
+  }
 
   const predictWebcam = useCallback((video: HTMLVideoElement) => {
     if (!gestureRecognizer || !video) return
@@ -107,12 +121,12 @@ export default function GestureRecognizerTest () {
     window.requestAnimationFrame(() => predictWebcam(video))
   }, [gestureRecognizer, lastVideoTime])
 
-  const recognizeText = useCallback(async () => {
+  const recognizeText = useCallback(async (ctx: CanvasRenderingContext2D) => {
     if (!workerRef.current || !canvasRef.current) {
       console.warn('Worker or canvas not ready yet')
       return
     }
-    const capture = canvasRef.current.toDataURL()
+    const capture = getMirroredDataUrl()
     const ret = await workerRef.current.recognize(capture)
     if (ret.data.text) {
       setRecognizedText(`${ret.data.text}`)
@@ -132,11 +146,8 @@ export default function GestureRecognizerTest () {
       for (const gestures of results.gestures) {
         for (const gesture of gestures) {
           if (gesture.categoryName !== "Pointing_Up") {
-            canvasCtx.scale(-1,1)
-            canvasCtx.save()
-            recognizeText()
+            recognizeText(canvasCtx)
             canvasCtx.clearRect(0, 0, canvas.width, canvas.height)
-            // canvasCtx.restore()
           }
           else {
             if (results.landmarks) {
