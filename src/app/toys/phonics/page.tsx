@@ -6,10 +6,10 @@
  */
 import Tesseract, { createWorker } from 'tesseract.js'
 import { GestureRecognizer, FilesetResolver, DrawingUtils, GestureRecognizerResult } from '@mediapipe/tasks-vision'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
-
+import { useSpeech } from 'react-text-to-speech'
 
 const VIDEO_HEIGHT = "720px"
 const VIDEO_WIDTH = "960px"
@@ -20,6 +20,14 @@ export default function GestureRecognizerTest () {
   const [lastVideoTime, setLastVideoTime] = useState(-1)
   const [recognizedText, setRecognizedText] = useState(``)
   
+  const speechText = useMemo(() => {
+    return <div>{recognizedText}</div>
+  }, [recognizedText]);
+
+  const {
+    start,
+  } = useSpeech({ text: speechText, autoPlay: true})
+
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
   const workerRef = useRef<Tesseract.Worker>(null)
@@ -38,6 +46,7 @@ export default function GestureRecognizerTest () {
         repeat: 1,
         yoyoEase: 'power2.inOut',
         onComplete: () => {
+          start()
           gsap.to(recognizedTextRef.current, {
             opacity: 0,
           })
@@ -81,6 +90,10 @@ export default function GestureRecognizerTest () {
     }
   }, [])
 
+  const speakText = useCallback(() => {
+
+  }, [recognizedText])
+
   const predictWebcam = useCallback((video: HTMLVideoElement) => {
     if (!gestureRecognizer || !video) return
     
@@ -123,7 +136,7 @@ export default function GestureRecognizerTest () {
             canvasCtx.save()
             recognizeText()
             canvasCtx.clearRect(0, 0, canvas.width, canvas.height)
-            canvasCtx.restore()
+            // canvasCtx.restore()
           }
           else {
             if (results.landmarks) {
