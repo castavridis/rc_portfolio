@@ -112,7 +112,7 @@ export default function GestureRecognizerTest () {
                 //   lineWidth: 1,
                 // })
                 drawingUtils.drawLandmarks([landmarks[8]], {
-                  color: "#00FF00",
+                  color: "#000000",
                   lineWidth: 5,
                 })
               }
@@ -162,15 +162,21 @@ export default function GestureRecognizerTest () {
   return (
     isLoading 
       ? <div>
-          Is loading...
+          Loading Phonics Toy...
         </div> 
       : <div>
-          <button onClick={handleButtonClick}>Enable Webcam</button>
+          <h1>Phonics Toy</h1>
+          <div className="flex items-center">
+            <h2 className="mb-0">1. Enable Webcam</h2>
+            <button className="rounded-md block p-3 ml-4" onClick={handleButtonClick}>Enable Webcam</button>
+          </div>
+          <h2>2. Attempt to draw letters using 👆 your pointer finger</h2>
+          <h2>3. When you're ready to check your letter, close your fist ✊</h2>
           <div style={{
             position: "relative"
           }}>
-            <video ref={videoRef} autoPlay playsInline style={{ opacity: 0.25 }} />
-            <canvas ref={canvasRef} width="1280" height="720" style={{
+            <video className="scale-x-[-1]" ref={videoRef} autoPlay playsInline style={{ opacity: 0.25 }} />
+            <canvas className="scale-x-[-1]" ref={canvasRef} width="1280" height="720" style={{
               position: "absolute",
               top: 0,
               left: 0,
