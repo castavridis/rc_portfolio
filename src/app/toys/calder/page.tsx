@@ -7,6 +7,11 @@ import * as THREE from 'three'
 import { Canvas, ThreeElements, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 
+import dynamic from 'next/dynamic'
+const BezierDrawingTool = dynamic(() => import('./bezierTool'), {
+  ssr: false,
+})
+
 function MobilePiece (props: ThreeElements['mesh']): React.ReactElement {
   const meshRef = useRef<THREE.Mesh>(null!)
   useFrame((state, delta) => {
@@ -89,6 +94,8 @@ export default function CalderPage (): React.ReactNode {
   return (
     <div>
       <h1>Calder</h1>
+      <h2>p5.js Drawing Tool</h2>
+      <BezierDrawingTool />
       <h2>Three.js Playground</h2>
       <div className="flex items-stretch h-[80vh]">
         <Canvas className="w-full h-full">
