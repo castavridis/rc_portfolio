@@ -25,10 +25,16 @@ const MODE = {
     color: '#F0F',
   },
 }
-const SHAPE_COLORS = ['#9BF6FF','#CAFFBF','#FDFFB6','#FFD6A5','#FFADAD','#FFAAFF']
+const SHAPE_COLORS = [
+  '#E63946', // red
+  '#F9A825', // yellow
+  '#2E4C9C', // blue
+  '#2B2B2B', // black
+  '#FFFFFF', // white
+]
 const SKETCH_WIDTH = 500
 const SKETCH_HEIGHT = 500
-const SKETCH_GREY = 200
+const SKETCH_GREY = 185
 
 let currMode = 0,
     font,
@@ -211,7 +217,7 @@ const s = (sketch: p5, addShape: () => void) => {
     }
   }
   sketch.draw = () => {
-    sketch.background(255)
+    sketch.background('#E8D5C4')
     sketch.noStroke()
     drawUI()
     drawCurrentShape()

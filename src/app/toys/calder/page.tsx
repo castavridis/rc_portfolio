@@ -105,12 +105,19 @@ function BezierShapeCanvas ({
 function CalderMesh ({
   data,
   shape,
+  index,
 }) {
-  const meshRef = useRef(null);
+  const meshRef = useRef<THREE.Mesh>(null);
+  useEffect(() => {
+    if (meshRef.current) {
+      meshRef.current.rotateY(90)
+      meshRef.current.translateZ((index + 1) * 5)
+    }
+  }, [meshRef])
   return (
-    <mesh ref={meshRef} scale={0.25}>
-      <meshStandardMaterial color={data.color} />
-      <extrudeGeometry args={[shape, { depth: 0.25 }]} />
+    <mesh ref={meshRef} scale={0.5}>
+      <meshStandardMaterial color={data.color}/>
+      <extrudeGeometry args={[shape, { depth: 0.5 }]} />
     </mesh>
   )
 }
@@ -136,7 +143,7 @@ function CalderCanvas ({
       }
       shape.moveTo(origin[0],origin[1])
       _shapes.push(
-        <CalderMesh key={i} data={data} shape={shape} />
+        <CalderMesh key={i} data={data} shape={shape} index={i} />
       )
     }
     setMeshes((_prev) => _shapes)
@@ -150,17 +157,16 @@ function CalderCanvas ({
     generateShapes()
   }, [shapes])
 
-  const scene = new THREE.Scene()
-  scene.background = new THREE.Color('0xFF00FF')
   return (
     // TODO: Figure out why tailwind isn't working
-    <div className="w-[500px] h-[500px] border-2" style={{
+    <div className="w-[500px] h-[500px]" style={{
       width: '500px',
       height: '500px',
+      backgroundColor: '#E8D5C4',
     }}>
       { meshes &&
-            <Canvas scene={scene} camera={{
-              position: [getOrigin()[0], getOrigin()[1], 5] 
+            <Canvas camera={{
+              position: [getOrigin()[0], getOrigin()[1], 5]
             }}>
             <ambientLight intensity={Math.PI / 2} />
             <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} decay={0} intensity={Math.PI} />
