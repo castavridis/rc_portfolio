@@ -8,6 +8,10 @@ import { Canvas, ThreeElements, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 
 import dynamic from 'next/dynamic'
+
+const BezierShapeTool = dynamic(() => import('./bezierShapeTool'), {
+  ssr: false,
+})
 const BezierDrawingTool = dynamic(() => import('./bezierTool'), {
   ssr: false,
 })
@@ -90,12 +94,42 @@ function CounterWeight(): React.ReactElement {
   )
 }
 
+function BezierShapeCanvas ({
+  setShapes,
+}): React.ReactNode {
+  return (
+    <div></div>
+  )
+}
+
+function CalderCanvas ({
+  shapes,
+}): React.ReactNode {
+  useEffect(() => {}, [shapes])
+  return (
+    <div></div>
+  )
+}
+
+function CalderData (): React.ReactNode {
+  const [shapes, setShapes] = useState<any[]>();
+
+  return (
+    <div>
+      <BezierShapeCanvas setShapes={setShapes} />
+      <CalderCanvas shapes={shapes} />
+    </div>
+  )
+}
+
 export default function CalderPage (): React.ReactNode {
   return (
     <div>
       <h1>Calder</h1>
+      <h2>p5.js Shape Tool</h2>
+      <BezierShapeTool />
       <h2>p5.js Drawing Tool</h2>
-      <BezierDrawingTool />
+      {/* <BezierDrawingTool /> */}
       <h2>Three.js Playground</h2>
       <div className="flex items-stretch h-[80vh]">
         <Canvas className="w-full h-full">
@@ -111,7 +145,34 @@ export default function CalderPage (): React.ReactNode {
       <div>
         <h2>Project Notes</h2>
         <p>
-          To start, we will attempt to model some of the more common Alexander Calder mobiles.
+          25-10-18 Create a Calder shape editor in p5.js that moves data between p5 and three.js.
+        </p>
+        <p>
+          Bezier shaping
+        </p>
+        <ol>
+          <li>Begin shape</li>
+          <li>Click to add vertices</li>
+          <ul>
+            <li>1 vertex</li>
+            <ul>
+              <li>store first point, (x, y)</li>
+            </ul>
+            <li>n bezierVertex</li>
+            <ul>
+              <li>store (x1, y1) origin control point</li>
+              <li>store (x3, y3) destination point</li>
+              <li>store (x2, y2) destination control point (default to x3, y3)</li>
+            </ul>
+          </ul>
+          <li>End shape</li>
+        </ol>
+        <ul>
+          <li>While bezierVertex is not complete, preview resulting line based on mouseX, mouseY</li>
+          <li>When the bezierVertex is complete, allow the control point to be manipulated</li>
+        </ul>
+        <p>
+          25-10-16 To start, we will attempt to model some of the more common Alexander Calder mobiles.
         </p>
         {/* Alt text from Claude! */}
         <img src="https://www.cahh.es/wp-content/uploads/2023/06/Alexander-Calder-Black-and-Yellow-Dots-in-the-Air-1960-1.jpg" alt="Alexander Calder mobile sculpture with black and yellow circular discs suspended on wire arms." />

@@ -38,6 +38,9 @@ importers:
       p5:
         specifier: ^2.0.5
         version: 2.0.5
+      p5play:
+        specifier: ^3.33.5
+        version: 3.33.5
       postcss:
         specifier: ^8.5.6
         version: 8.5.6
@@ -1746,6 +1749,9 @@ packages:
 
   p5@2.0.5:
     resolution: {integrity: sha512-JeBIHvxmCK2TcKZiyqe0z6rPcSiSID1tbeFwo5FDBiwrmiGtAvLXRLjWtTDGEVHcr/EICe8hEmNwWIQ+xIzKeQ==}
+
+  p5play@3.33.5:
+    resolution: {integrity: sha512-zczn4UwhPxfoJTubKq7oS1dSxjw+e682QBnmz+Kyditp/gqzNbEbZxqT2SWRmHds7UpEyVIcAmIQBlVsNzsB9Q==}
 
   pako@2.1.0:
     resolution: {integrity: sha512-w+eufiZ1WuJYgPXbV/PO3NCMEc3xqylkKHzp8bxp1uW4qaSNQUkwmLLEc3kKsfz8lpV1F8Ht3U1Cm+9Srog2ug==}
@@ -4006,6 +4012,8 @@ snapshots:
       pako: 2.1.0
       pixelmatch: 7.1.0
       zod: 3.25.76
+
+  p5play@3.33.5: {}
 
   pako@2.1.0: {}
 
