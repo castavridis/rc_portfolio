@@ -2,7 +2,7 @@
 
 // Q: What might server-side THREE js look like?
 
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useCallback } from 'react'
 import * as THREE from 'three'
 import { Canvas, ThreeElements, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
@@ -98,26 +98,93 @@ function BezierShapeCanvas ({
   setShapes,
 }): React.ReactNode {
   return (
-    <div></div>
+    <BezierShapeTool setShapes={setShapes} />
   )
 }
 
+function CalderMesh ({
+  data,
+  shape,
+}) {
+  const meshRef = useRef(null);
+  return (
+    <mesh ref={meshRef} scale={0.25}>
+      <meshStandardMaterial color={data.color} />
+      <extrudeGeometry args={[shape, { depth: 0.25 }]} />
+    </mesh>
+  )
+}
 function CalderCanvas ({
   shapes,
 }): React.ReactNode {
-  useEffect(() => {}, [shapes])
+  const generateShapes = useCallback((): React.ReactNode[] => {
+    if (!shapes) return
+    const _shapes = []
+    for (let i = 0; i < shapes.length; i++) {
+      const data = shapes[i]
+      if (!data) continue;
+      const shape = new THREE.Shape()
+      const origin = data.vertices[0]
+      shape.moveTo(origin[0],origin[1])
+      for (let j = 1; j < data.vertices.length; j++) {
+        const coords = data.vertices[j]
+        shape.bezierCurveTo(
+          coords[0],coords[1],
+          coords[2],coords[3],
+          coords[4],coords[5],
+        )
+      }
+      shape.moveTo(origin[0],origin[1])
+      _shapes.push(
+        <CalderMesh key={i} data={data} shape={shape} />
+      )
+    }
+    setMeshes((_prev) => _shapes)
+  }, [shapes])
+  const getOrigin = useCallback((): number[] => {
+    if (!shapes || shapes.length === 0) return [0,0]
+    return shapes[0].vertices[0]
+  }, [shapes])
+  const [meshes, setMeshes] = useState<any[]>(null)
+  useEffect(() => {
+    generateShapes()
+  }, [shapes])
+
+  const scene = new THREE.Scene()
+  scene.background = new THREE.Color('0xFF00FF')
   return (
-    <div></div>
+    // TODO: Figure out why tailwind isn't working
+    <div className="w-[500px] h-[500px] border-2" style={{
+      width: '500px',
+      height: '500px',
+    }}>
+      { meshes &&
+            <Canvas scene={scene} camera={{
+              position: [getOrigin()[0], getOrigin()[1], 5] 
+            }}>
+            <ambientLight intensity={Math.PI / 2} />
+            <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} decay={0} intensity={Math.PI} />
+            <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
+            <OrbitControls />
+            { meshes }
+          </Canvas>
+      }
+    </div>
   )
 }
 
 function CalderData (): React.ReactNode {
   const [shapes, setShapes] = useState<any[]>();
-
   return (
-    <div>
-      <BezierShapeCanvas setShapes={setShapes} />
-      <CalderCanvas shapes={shapes} />
+    <div className="flex">
+      <div>
+        <h2>Bezier shape tool</h2>
+        <BezierShapeCanvas setShapes={setShapes} />
+      </div>
+      <div>
+        <h2>Three js canvas</h2>
+        <CalderCanvas shapes={shapes} />
+      </div>
     </div>
   )
 }
@@ -126,9 +193,11 @@ export default function CalderPage (): React.ReactNode {
   return (
     <div>
       <h1>Calder</h1>
-      <h2>p5.js Shape Tool</h2>
-      <BezierShapeTool />
-      <h2>p5.js Drawing Tool</h2>
+      <h2>p5 to threejs pipeline</h2>
+      <CalderData />
+      {/* <h2>p5.js Shape Tool</h2> */}
+      {/* <BezierShapeTool /> */}
+      {/* <h2>p5.js Drawing Tool</h2> */}
       {/* <BezierDrawingTool /> */}
       <h2>Three.js Playground</h2>
       <div className="flex items-stretch h-[80vh]">

@@ -5,7 +5,7 @@
 
 import { Grid } from 'pretty-grid'
 import p5 from 'p5'
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 const MODE = {
   0: {
@@ -38,7 +38,7 @@ let currMode = 0,
     pointer,
     pointerDown = false
 
-const s = (sketch: p5) => {
+const s = (sketch: p5, addShape: () => void) => {
   let shapes = []
   let currShape = null
   let currBezier = [] // [ocpX,ocpY,dcpX,dcpY,dX,dY]
@@ -94,12 +94,14 @@ const s = (sketch: p5) => {
   }
   function drawCurrentShape () {
     if (!currShape) return
-    console.log(currShape)
 
     const origin = currShape.vertices[0]
     sketch.beginShape()
-    sketch.vertex(...origin)
+
+    sketch.stroke(SKETCH_GREY)
+    sketch.strokeWeight(1)
     sketch.fill(MODE[0].color)
+    sketch.vertex(...origin)
     sketch.circle(...origin, 5)
 
     for(let i = 1; i < currShape.vertices.length; i++) {
@@ -108,8 +110,6 @@ const s = (sketch: p5) => {
       sketch.bezierVertex(currBezier[2],currBezier[3])
       sketch.bezierVertex(currBezier[4],currBezier[5])
 
-      sketch.stroke(SKETCH_GREY)
-      sketch.strokeWeight(1)
       sketch.line(...origin, currBezier[0], currBezier[1])
       sketch.line(currBezier[4],currBezier[5], currBezier[2], currBezier[3])
       sketch.noStroke()
@@ -205,7 +205,9 @@ const s = (sketch: p5) => {
     if (sketch.key = 'ESC') {
       isDrawing = false
       shapes.push(currShape)
+      addShape(currShape)
       currShape = null
+      currMode = 0
     }
   }
   sketch.draw = () => {
@@ -240,14 +242,20 @@ const s = (sketch: p5) => {
   }
 }
 
-export default function BezierShapeTool (): React.ReactElement {
+export default function BezierShapeTool ({ setShapes }: {
+  setShapes?: () => void
+}): React.ReactElement {
   // Following an approach from Claude to use refs for the div and the sketch
   const containerRef = useRef<HTMLDivElement>(null)
   const sketchRef = useRef<p5>(null)
 
+  const addShape = useCallback((shape) => {
+    setShapes((prev) => [...(prev || []), shape])
+  }, [setShapes])
+
   useEffect(() => {
     if (containerRef.current && !sketchRef.current) {
-      sketchRef.current = new p5(s, containerRef.current)
+      sketchRef.current = new p5((sketch) => s(sketch, addShape), containerRef.current)
     }
 
     // Clean up sketch
