@@ -9,7 +9,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="container mx-auto py-12">
+      <body>
         { children }
       </body>
     </html>

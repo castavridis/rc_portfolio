@@ -1,4 +1,4 @@
-import { CalderData } from './bezierTests'
+import { CalderData } from './components/bezierTests'
 import './styles.css'
 
 export default function CalderPage (): React.ReactNode {
