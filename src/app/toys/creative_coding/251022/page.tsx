@@ -11,7 +11,7 @@ const Sketch251022 = dynamic(() => import('./sketch'),{
 export default function CreativeCoding251022 (): React.ReactNode {
 
   return (
-    <div className="bg-calder-black">
+    <div>
       <Sketch251022 />
     </div>
   )
