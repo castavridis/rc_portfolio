@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+@theme {
+  --color-calder-beige: #E8D5C4;
+  --color-calder-black: #2B2B2B;
+  --color-calder-blue: #2E4C9C;
+  --color-calder-red: #E63946;
+  --color-calder-yellow: #F9A825;
+}
 :root {
   --background: #ffffff;
   --foreground: #171717;

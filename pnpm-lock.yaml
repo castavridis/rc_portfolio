@@ -8,6 +8,12 @@ importers:
 
   .:
     dependencies:
+      '@dimforge/rapier2d':
+        specifier: ^0.19.2
+        version: 0.19.2
+      '@dimforge/rapier3d':
+        specifier: ^0.19.2
+        version: 0.19.2
       '@gsap/react':
         specifier: ^2.1.2
         version: 2.1.2(gsap@3.13.0)(react@19.1.1)
@@ -26,6 +32,9 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.1.14
         version: 4.1.14
+      box2d:
+        specifier: ^1.0.0
+        version: 1.0.0
       gsap:
         specifier: ^3.13.0
         version: 3.13.0
@@ -38,9 +47,6 @@ importers:
       p5:
         specifier: ^2.0.5
         version: 2.0.5
-      p5play:
-        specifier: ^3.33.5
-        version: 3.33.5
       postcss:
         specifier: ^8.5.6
         version: 8.5.6
@@ -104,11 +110,17 @@ packages:
   '@davepagurek/bezier-path@0.0.2':
     resolution: {integrity: sha512-4L9ddgzZc9DRGyl1RrS3z5nwnVJoyjsAelVG4X1jh4tVxryEHr4H9QavhxW/my6Rn3669Qz6mhv8gd5O/WeFTA==}
 
+  '@dimforge/rapier2d@0.19.2':
+    resolution: {integrity: sha512-EIdhXLulG2OEEPpqww4km7KitoXdRNsZ8sFu7WXnSTNF0TppziCaK1nKIsC0K17eR/lrr0K2KcoXo48R+PapTQ==}
+
   '@dimforge/rapier3d-compat@0.12.0':
     resolution: {integrity: sha512-uekIGetywIgopfD97oDL5PfeezkFpNhwlzlaEYNOA0N6ghdsOvh/HYjSMek5Q2O1PYvRSDFcqFVJl4r4ZBwOow==}
 
   '@dimforge/rapier3d-compat@0.15.0':
     resolution: {integrity: sha512-TRH9rmF6RJqvKt0xis6VkToJHz4Pf54IfYhKGWn7zkpTWPwVyQ4p9kjwrdm6jOfGn72MBrIbttzvDB/ZOqE7sg==}
+
+  '@dimforge/rapier3d@0.19.2':
+    resolution: {integrity: sha512-+2WC+PeZXiv7cBfHTpEFgAhAhHUBdTE7K7ngx3EHEd6Gq9alIiJQoSE2xdxRqRCzFs77NFFvQcXUp9j9Z5HUcQ==}
 
   '@emnapi/core@1.5.0':
     resolution: {integrity: sha512-sbP8GzB1WDzacS8fgNPpHlp6C9VZe+SJP3F90W9rLemaQj2PzIuTEl1qDOYQf58YIpyjViI24y9aPWCjEzY2cg==}
@@ -856,6 +868,10 @@ packages:
 
   bmp-js@0.1.0:
     resolution: {integrity: sha512-vHdS19CnY3hwiNdkaqk93DvjVLfbEcI8mys4UjuWrlX1haDmroo8o4xCzh4wD6DGV6HxRCyauwhHRqMTfERtjw==}
+
+  box2d@1.0.0:
+    resolution: {integrity: sha512-1u+c+mlAaoBo7Yksw81o61euVpPBGaAxLphG1W48LTnLsLMTMVCKrAmCpR8pOSCGu7SjrZ++kvMXn26CzX2b3Q==}
+    engines: {'0': node}
 
   brace-expansion@1.1.12:
     resolution: {integrity: sha512-9T9UjW3r0UW5c1Q7GTwllptXwhvYmEzFhzMfZ9H7FQWt+uZePjZPjBP/W1ZEyZ1twGWom5/56TF4lPcqjnDHcg==}
@@ -1750,9 +1766,6 @@ packages:
   p5@2.0.5:
     resolution: {integrity: sha512-JeBIHvxmCK2TcKZiyqe0z6rPcSiSID1tbeFwo5FDBiwrmiGtAvLXRLjWtTDGEVHcr/EICe8hEmNwWIQ+xIzKeQ==}
 
-  p5play@3.33.5:
-    resolution: {integrity: sha512-zczn4UwhPxfoJTubKq7oS1dSxjw+e682QBnmz+Kyditp/gqzNbEbZxqT2SWRmHds7UpEyVIcAmIQBlVsNzsB9Q==}
-
   pako@2.1.0:
     resolution: {integrity: sha512-w+eufiZ1WuJYgPXbV/PO3NCMEc3xqylkKHzp8bxp1uW4qaSNQUkwmLLEc3kKsfz8lpV1F8Ht3U1Cm+9Srog2ug==}
 
@@ -2255,9 +2268,13 @@ snapshots:
 
   '@davepagurek/bezier-path@0.0.2': {}
 
+  '@dimforge/rapier2d@0.19.2': {}
+
   '@dimforge/rapier3d-compat@0.12.0': {}
 
   '@dimforge/rapier3d-compat@0.15.0': {}
+
+  '@dimforge/rapier3d@0.19.2': {}
 
   '@emnapi/core@1.5.0':
     dependencies:
@@ -2976,6 +2993,8 @@ snapshots:
       require-from-string: 2.0.2
 
   bmp-js@0.1.0: {}
+
+  box2d@1.0.0: {}
 
   brace-expansion@1.1.12:
     dependencies:
@@ -4012,8 +4031,6 @@ snapshots:
       pako: 2.1.0
       pixelmatch: 7.1.0
       zod: 3.25.76
-
-  p5play@3.33.5: {}
 
   pako@2.1.0: {}
 
