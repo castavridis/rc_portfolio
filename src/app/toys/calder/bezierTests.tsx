@@ -10,6 +10,9 @@ import { Box, CameraControls, OrbitControls } from '@react-three/drei'
 import dynamic from 'next/dynamic'
 import { Physics, RigidBody, } from '@react-three/rapier'
 
+const BezierBox2d = dynamic(() => import('./bezierBox2d'), {
+  ssr: false,
+})
 const BezierShapeTool = dynamic(() => import('./bezierShapeTool'), {
   ssr: false,
 })
@@ -205,12 +208,6 @@ function CalderCanvas ({
   )
 }
 
-function CalderP5Physics (): React.ReactNode {
-  return (
-    <div></div>
-  )
-}
-
 function CalderThreeRapier ({
   shapes,
 }): React.ReactNode {
@@ -239,8 +236,8 @@ function CalderThreeRapier ({
       // shape.moveTo(origin[0],origin[1])
       shape.moveTo(0,0)
       _shapes.push(
-        <RigidBody colliders="trimesh">
-          <CalderMesh key={i} data={data} shape={shape} index={i} scale={scale} />
+        <RigidBody key={i} colliders="trimesh">
+          <CalderMesh data={data} shape={shape} index={i} scale={scale} />
         </RigidBody>
       )
     }
@@ -296,18 +293,24 @@ function CalderThreeRapier ({
 export function CalderData (): React.ReactNode {
   const [shapes, setShapes] = useState<any[]>();
   return (
-    <div className="flex">
-      <div>
-        <h2>Bezier shape tool</h2>
-        <BezierShapeCanvas setShapes={setShapes} />
+    <div>
+      <div className="flex">
+        <div>
+          <h2>Bezier shape tool</h2>
+          <BezierShapeCanvas setShapes={setShapes} />
+        </div>
+        <div>
+          <h2>Three js canvas</h2>
+          <CalderCanvas shapes={shapes} />
+        </div>
+        <div>
+          <h2>Three + Rapier canvas</h2>
+          <CalderThreeRapier shapes={shapes} />
+        </div>
       </div>
       <div>
-        <h2>Three js canvas</h2>
-        <CalderCanvas shapes={shapes} />
-      </div>
-      <div>
-        <h2>Three + Rapier canvas</h2>
-        <CalderThreeRapier shapes={shapes} />
+        <h2>p5.js + Box2D</h2>
+        <BezierBox2d shapes={shapes} />
       </div>
     </div>
   )
