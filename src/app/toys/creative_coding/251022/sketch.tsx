@@ -124,7 +124,7 @@ export default function Sketch251022 (): React.ReactNode {
   }, [])
 
   return (
-    <div className="bg-calder-black">
+    <div>
       <h1>Sketch</h1>
       <p>Click to draw pumpkins</p>
       <div 

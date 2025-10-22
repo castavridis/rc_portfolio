@@ -7,7 +7,7 @@ export default function CreativeCodingLayout({
   children: React.ReactNode,
 }) {
   return (
-    <div className="bg-calder-black w-full h-full">
+    <div className="w-full h-full">
       { children }
     </div>
   )
