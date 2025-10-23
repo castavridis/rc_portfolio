@@ -94,17 +94,19 @@ class Shape {
       vertices,
       options,
     )
-    console.log(this.body)
   }
   show () {
     // console.log(this.body.id, this.body.position, this.body.angle)
     this.pos = this.body.position
+    this.bounds = this.body.bounds
+    const w = this.bounds.max.x - this.bounds.min.x
+    const h = this.bounds.max.y - this.bounds.min.y
     this.angle = this.body.angle
     this.sketch.push()
     this.sketch.noStroke()
     this.sketch.translate(
-      this.pos.x,
-      this.pos.y,
+      this.pos.x - w,
+      this.pos.y - h,
     )
     this.sketch.rotate(this.angle)
     this.sketch.fill(this.color)
