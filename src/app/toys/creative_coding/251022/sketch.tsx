@@ -12,7 +12,6 @@ const SCREEN_HEIGHT = 500
 const engine = Engine.create()
 const world = engine.world
 const runner = Runner.create()
-Runner.run(runner, engine)
 
 const pumpkinConstructor = (settings) => {
   const {sketch, world} = settings
@@ -95,7 +94,8 @@ const s = (sketch) => {
       boundsOpts,
     )
     World.add(world,[ground, leftWall, rightWall])
-    Engine.run(engine)
+    Runner.run(runner, engine)
+    // Engine.run(engine)
   }
   sketch.mousePressed = () => {
     addPumpkin({

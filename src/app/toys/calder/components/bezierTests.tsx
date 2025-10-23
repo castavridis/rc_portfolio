@@ -5,20 +5,24 @@
 import { useRef, useEffect, useState, useCallback } from 'react'
 import * as THREE from 'three'
 import { Canvas, ThreeElements, useFrame } from '@react-three/fiber'
-import { Box, CameraControls, OrbitControls } from '@react-three/drei'
+import { Box, OrbitControls } from '@react-three/drei'
 
 import dynamic from 'next/dynamic'
 import { Physics, RigidBody, } from '@react-three/rapier'
 
-const BezierBox2d = dynamic(() => import('./bezierBox2d'), {
+
+const BezierCanvas = dynamic(() => import('./bezierCanvas'), {
+  ssr: false,
+})
+const BezierMatter = dynamic(() => import('./bezierMatter'), {
   ssr: false,
 })
 const BezierShapeTool = dynamic(() => import('./bezierShapeTool'), {
   ssr: false,
 })
-const BezierDrawingTool = dynamic(() => import('./bezierTool'), {
-  ssr: false,
-})
+// const BezierDrawingTool = dynamic(() => import('./bezierTool'), {
+//   ssr: false,
+// })
 
 function MobilePiece (props: ThreeElements['mesh']): React.ReactElement {
   const meshRef = useRef<THREE.Mesh>(null!)
@@ -308,9 +312,15 @@ export function CalderData (): React.ReactNode {
           <CalderThreeRapier shapes={shapes} />
         </div>
       </div>
-      <div>
-        <h2>p5.js + Box2D</h2>
-        <BezierBox2d shapes={shapes} />
+      <div className="flex">
+        <div>
+          <h2>p5.js + Canvas</h2>
+          <BezierCanvas shapes={shapes} />
+        </div>
+        <div>
+          <h2>p5.js + Box2D</h2>
+          <BezierMatter shapes={shapes} />
+        </div>
       </div>
     </div>
   )

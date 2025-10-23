@@ -3,29 +3,9 @@
 
 "use client"
 
-import { Grid } from 'pretty-grid'
-import Matter from 'matter-js'
 import p5 from 'p5'
 import { useCallback, useEffect, useRef } from 'react'
 
-const MODE = {
-  0: {
-    name: 'Origin',
-    color: '#00F',
-  },
-  1: {
-    name: 'Destination',
-    color: '#0FF',
-  },
-  2: {
-    name: 'Destination Control Point',
-    color: '#FF0',
-  },
-  3: {
-    name: 'Origin Control Point',
-    color: '#F0F',
-  },
-}
 const SHAPE_COLORS = [
   '#E63946', // red
   '#F9A825', // yellow
@@ -37,19 +17,13 @@ const SKETCH_WIDTH = 500
 const SKETCH_HEIGHT = 500
 const SKETCH_GREY = 185
 
-const { Engine, World, Bodies, Bounds, Composite } = Matter
-
 let currMode = 0,
     font,
-    grid,
     isDrawing,
     // isEditing,
     pointer,
     pointerDown = false,
-    _shapes,
-    engine,
-    world,
-    ground
+    _shapes
 
 const s = (sketch: p5) => {
   function drawShapeHelper (shape) {
@@ -72,39 +46,9 @@ const s = (sketch: p5) => {
       drawShapeHelper(shape)
     }
   }
-  function drawDotGrid () {
-    sketch.fill(SKETCH_GREY)
-    grid.every(({ x, y }) => sketch.circle(x, y, 2))
-  }
-  function drawAxes () {
-    const margin = 50
-    sketch.stroke(SKETCH_GREY)
-    sketch.strokeWeight(1.5)
-    // y-axis
-    sketch.line(margin, margin, margin, SKETCH_HEIGHT-margin)
-    // x-axis
-    sketch.line(margin, SKETCH_HEIGHT - margin, SKETCH_WIDTH - margin, SKETCH_HEIGHT-margin)
-    sketch.noStroke()
-  }
-  function drawUI () {
-    drawDotGrid()
-    drawAxes()
-  }
-
-  class Boundary {}
-  
-  function setupMatter () {
-    engine = Engine.create()
-    world = engine.world
-    ground = Bounds.create()
-    Composite.add(world, ground)
-    // follow bounds of drawAxes with a second axis on the right
-    // Use chamfering
-  }
   sketch.draw = () => {
     sketch.background('#E8D5C4')
     sketch.noStroke()
-    drawUI()
     drawShapes()
   }
   sketch.setup = async () => {
@@ -128,12 +72,10 @@ const s = (sketch: p5) => {
     }
     // No need to call sketch.createCanvas in instance mode
     sketch.resizeCanvas(SKETCH_WIDTH,SKETCH_HEIGHT,true)
-    // setupMatter()
-    grid = new Grid(40, 40, SKETCH_WIDTH, SKETCH_HEIGHT)
   }
 }
 
-export default function BezierBox2d ({ shapes }): React.ReactNode {
+export default function BezierCanvas ({ shapes }): React.ReactNode {
   // Following an approach from Claude to use refs for the div and the sketch
   const containerRef = useRef<HTMLDivElement>(null)
   const sketchRef = useRef<p5>(null)
