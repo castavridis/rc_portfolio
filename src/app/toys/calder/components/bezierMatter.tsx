@@ -3,29 +3,12 @@
 
 "use client"
 
+import * as PolyDecomp from 'poly-decomp'
 import { Grid } from 'pretty-grid'
-import Matter from 'matter-js'
+import { Common, Engine, World, Bodies, Render, Runner, Vertices } from 'matter-js'
 import p5 from 'p5'
 import { useCallback, useEffect, useRef } from 'react'
 
-const MODE = {
-  0: {
-    name: 'Origin',
-    color: '#00F',
-  },
-  1: {
-    name: 'Destination',
-    color: '#0FF',
-  },
-  2: {
-    name: 'Destination Control Point',
-    color: '#FF0',
-  },
-  3: {
-    name: 'Origin Control Point',
-    color: '#F0F',
-  },
-}
 const SHAPE_COLORS = [
   '#E63946', // red
   '#F9A825', // yellow
@@ -35,32 +18,54 @@ const SHAPE_COLORS = [
 ]
 const SKETCH_WIDTH = 500
 const SKETCH_HEIGHT = 500
-const SKETCH_GREY = 185
-
-const { Engine, World, Bodies, Render, Runner } = Matter
+const SKETCH_GREY = 150
 
 let currMode = 0,
     font,
     grid,
-    isDrawing,
-    // isEditing,
-    pointer,
-    pointerDown = false,
-    _shapes,
+    prevShapes = [],
     letMatterDebug
 
+const matterShapes = []
 const engine = Engine.create()
 const world = engine.world
 const runner = Runner.create()
-// Runner.run(runner, engine)
+
+function buildShapeVertices(sketch: p5, shape: any) {
+  const vertices = []
+  let originVertex = shape.vertices[0]
+  const resolution = 10
+  for (let i = 1; i < shape.vertices.length; i++) {
+    const currBezier = shape.vertices[i]
+    for (let j = 0; j <= resolution; j++) {
+      vertices.push({
+        x: sketch.bezierPoint(
+          originVertex[0],
+          currBezier[0],
+          currBezier[2],
+          currBezier[4],
+          j/resolution
+        ),
+        y: sketch.bezierPoint(
+          originVertex[1],
+          currBezier[1],
+          currBezier[3],
+          currBezier[5],
+          j/resolution,
+        ),
+      })
+    }
+    originVertex = [currBezier[4],currBezier[5]]
+  }
+  return vertices
+}
 
 class Shape {
   constructor (sketch: p5, shape: any) {
-    if (!shape || !shape.vertices) {
-      return
-    }
+    if (!shape || !shape.vertices) return
     this.sketch = sketch
-    this.vertices = shape.vertices
+    this.shape = shape
+    this.vertices = buildShapeVertices(sketch, shape)
     this.color = shape.color
     this.buildBody()
   }
@@ -70,29 +75,10 @@ class Shape {
       restitution: 0.8,
       label: 'weight'
     }
-    const vertices = []
-    vertices.push({
-      x: this.vertices[0][0],
-      y: this.vertices[0][1],
-    })
-    for (let i = 1; i < this.vertices.length; i++) {
-      // This approach is going to look weird...because control points are being added to this shape
-      const currBezier = this.vertices[i]
-      vertices.push({
-        x: currBezier[0],
-        y: currBezier[1],
-      },{
-        x: currBezier[2],
-        y: currBezier[3],
-      },{
-        x: currBezier[4],
-        y: currBezier[5]
-      })
-    }
     this.body = Bodies.fromVertices(
-      this.vertices[0][0],
-      this.vertices[0][1],
-      vertices,
+      this.shape.vertices[0][0],
+      this.shape.vertices[0][1],
+      this.vertices,
       options,
     )
     this.bounds = this.body.bounds
@@ -103,19 +89,20 @@ class Shape {
     console.error('TODO: Calculate the area and center of these vertices')
     this.pos = this.body.position
     this.angle = this.body.angle
+    this.center = Vertices.centre(this.vertices)
     this.sketch.push()
     this.sketch.noStroke()
     this.sketch.translate(
-      this.pos.x - this.w/2,
-      this.pos.y - this.h/2,
+      this.center.x,
+      this.center.y,
     )
     this.sketch.rotate(this.angle)
     this.sketch.fill(this.color)
     this.sketch.beginShape()
-    const origin = this.vertices[0]
+    const origin = this.shape.vertices[0]
     this.sketch.vertex(0,0)
-    for(let i = 1; i < this.vertices.length; i++) {
-      const currBezier = this.vertices[i]
+    for(let i = 1; i < this.shape.vertices.length; i++) {
+      const currBezier = this.shape.vertices[i]
       this.sketch.bezierVertex(
         currBezier[0]-origin[0],
         currBezier[1]-origin[1],
@@ -134,46 +121,21 @@ class Shape {
   }
 }
 
-
-const matterShapes = []
-let prevShapes = []
 function buildMatterShapes(
   sketch: p5,
   shapes: any[],
 ) {
   const difference = shapes.filter(shape => !prevShapes.includes(shape))
-  difference.forEach(
-    (shape) =>{
-      const _shape = new Shape(sketch, shape)
-      World.add(world, _shape.body)
-      matterShapes.push(_shape)
-    }
-  )
+  difference.forEach((shape) =>{
+    if (!shape) return
+    const _shape = new Shape(sketch, shape)
+    World.add(world, _shape.body)
+    matterShapes.push(_shape)
+  })
   prevShapes = shapes
- 
 }
 
 const s = (sketch: p5) => {
-  // function drawShapeHelper (shape) {
-  //   const origin = shape.vertices[0]
-  //   sketch.beginShape()
-  //   sketch.vertex(...origin)
-  //   for(let i = 1; i < shape.vertices.length; i++) {
-  //     const currBezier = shape.vertices[i]
-  //     sketch.bezierVertex(currBezier[0],currBezier[1])
-  //     sketch.bezierVertex(currBezier[2],currBezier[3])
-  //     sketch.bezierVertex(currBezier[4],currBezier[5])
-  //   }
-  //   sketch.fill(shape.color)
-  //   sketch.endShape(p5.CLOSE)
-  // }
-  // function drawShapes () {
-  //   if (!_shapes || _shapes.length === 0) return
-  //   for(let i = 0; i < _shapes.length; i++) {
-  //     const shape = _shapes[i]
-  //     drawShapeHelper(shape)
-  //   }
-  // }
   function drawDotGrid () {
     sketch.fill(SKETCH_GREY)
     grid.every(({ x, y }) => sketch.circle(x, y, 2))
@@ -192,7 +154,6 @@ const s = (sketch: p5) => {
     drawDotGrid()
     drawAxes()
   }
-
   sketch.draw = () => {
     sketch.background('#E8D5C4')
     sketch.noStroke()
@@ -200,28 +161,9 @@ const s = (sketch: p5) => {
     matterShapes.forEach((shape) => shape.show())
   }
   sketch.setup = async () => {
-    // Try to preload items
-    try {
-      // p5.js doesn't know what the client's default font is
-      // So a font must be loaded before we can get textBounds dynamically
-      await sketch.loadFont(
-        '/assets/fonts/Karla-Medium.ttf',
-        (data) => { 
-          font = sketch.textFont(data, 12)
-        },
-        (err) => { 
-          console.warn('Could not load preferred font. Attempting to load fallback.', err)
-          font = sketch.textFont('Arial', 12)
-        }
-      )
-    } catch(err) {
-      console.warn('Could not load preferred font. Attempting to load fallback.', err)
-      font = sketch.textFont('Arial', 12)
-    }
     // No need to call sketch.createCanvas in instance mode
     sketch.resizeCanvas(SKETCH_WIDTH,SKETCH_HEIGHT,true)
     grid = new Grid(40, 40, SKETCH_WIDTH, SKETCH_HEIGHT)
-
     // Add boundaries for shapes
     const boundsOpts = { isStatic: true }
     const ground = Bodies.rectangle(
@@ -245,9 +187,9 @@ const s = (sketch: p5) => {
       SKETCH_HEIGHT,
       boundsOpts,
     )
-
     World.add(world,[ground, leftWall, rightWall])
     Runner.run(runner, engine)
+    Common.setDecomp(PolyDecomp)
   }
 }
 
@@ -258,7 +200,7 @@ function attachRenderer (element: HTMLDivElement) {
     options: {
       background: 'transparent',
       wireframeBackground: 'transparent',
-      wireframeStrokeStyle: 'rgb(SKETCH_GREY, SKETCH_GREY, SKETCH_GREY)',
+      wireframeStrokeStyle: `rgb(${SKETCH_GREY},${SKETCH_GREY},${SKETCH_GREY})`,
       showBounds: true,
       showAngleIndicator: true,
     }
@@ -279,21 +221,17 @@ export default function BezierMatter ({ shapes }): React.ReactNode {
     if (sketchRef.current && shapes && shapes.length) {
       buildMatterShapes(sketchRef.current, shapes)
     }
-    // _shapes = shapes
   }, [shapes])
-
   useEffect(() => {
     if (containerRef.current && !sketchRef.current) {
       sketchRef.current = new p5(s, containerRef.current)
     }
-
-    // Clean up sketch
     return () => { 
+      // Clean up sketch
       debugRef.current?.remove()
       sketchRef.current?.remove()
     }
   }, [])
-
   useEffect(() => {
     if (!matterRef.current) {
       matterRef.current = attachRenderer(debugRef.current)
