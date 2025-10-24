@@ -269,6 +269,6 @@ export default function BezierShapeTool ({ setShapes }: {
   }, [])
 
   return (
-    <div ref={containerRef}></div>
+    <div className="border-calder-black/10 border-2" ref={containerRef}></div>
   )
 }

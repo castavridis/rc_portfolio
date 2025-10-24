@@ -187,7 +187,7 @@ function CalderCanvas ({
   }, [shapes])
   return (
     // TODO: Figure out why tailwind isn't working
-    <div className="w-[500px] h-[500px]" style={{
+    <div className="w-[500px] h-[500px] border-calder-black/10 border-2" style={{
       width: '500px',
       height: '500px',
       backgroundColor: '#E8D5C4',
@@ -257,7 +257,7 @@ function CalderThreeRapier ({
   }, [shapes])
   return (
     // TODO: Figure out why tailwind isn't working
-    <div className="w-[500px] h-[500px]" style={{
+    <div className="w-[500px] h-[500px] border-calder-black/10 border-2" style={{
       width: '500px',
       height: '500px',
       backgroundColor: '#E8D5C4',
@@ -298,8 +298,8 @@ export function CalderData (): React.ReactNode {
   const [shapes, setShapes] = useState<any[]>();
   return (
     <div>
-      <div className="flex">
-        <div>
+      <div className="flex gap-4 mb-4">
+        <div className="sticky top-4">
           <h2>Bezier shape tool</h2>
           <BezierShapeCanvas setShapes={setShapes} />
         </div>
@@ -312,14 +312,14 @@ export function CalderData (): React.ReactNode {
           <CalderThreeRapier shapes={shapes} />
         </div>
       </div>
-      <div className="flex">
-        <div>
-          <h2>p5.js + Matter</h2>
-          <BezierMatter shapes={shapes} />
-        </div>
+      <div className="flex gap-4 justify-end">
         <div>
           <h2>p5.js + Canvas</h2>
           <BezierCanvas shapes={shapes} />
+        </div>
+        <div>
+          <h2>p5.js + Matter</h2>
+          <BezierMatter shapes={shapes} />
         </div>
       </div>
     </div>

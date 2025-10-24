@@ -5,7 +5,7 @@
 
 import * as PolyDecomp from 'poly-decomp'
 import { Grid } from 'pretty-grid'
-import { Common, Engine, World, Bodies, Render, Runner, Vertices } from 'matter-js'
+import { Common, Engine, World, Bodies, Bounds, Render, Runner, Vertices, Body } from 'matter-js'
 import p5 from 'p5'
 import { useCallback, useEffect, useRef } from 'react'
 
@@ -19,6 +19,7 @@ const SHAPE_COLORS = [
 const SKETCH_WIDTH = 500
 const SKETCH_HEIGHT = 500
 const SKETCH_GREY = 150
+const BEZIER_RESOLUTION = 24
 
 let currMode = 0,
     font,
@@ -34,24 +35,23 @@ const runner = Runner.create()
 function buildShapeVertices(sketch: p5, shape: any) {
   const vertices = []
   let originVertex = shape.vertices[0]
-  const resolution = 10
   for (let i = 1; i < shape.vertices.length; i++) {
     const currBezier = shape.vertices[i]
-    for (let j = 0; j <= resolution; j++) {
+    for (let j = 0; j <= BEZIER_RESOLUTION; j++) {
       vertices.push({
         x: sketch.bezierPoint(
           originVertex[0],
           currBezier[0],
           currBezier[2],
           currBezier[4],
-          j/resolution
+          j / BEZIER_RESOLUTION
         ),
         y: sketch.bezierPoint(
           originVertex[1],
           currBezier[1],
           currBezier[3],
           currBezier[5],
-          j/resolution,
+          j / BEZIER_RESOLUTION,
         ),
       })
     }
@@ -60,20 +60,60 @@ function buildShapeVertices(sketch: p5, shape: any) {
   return vertices
 }
 
+// https://stackoverflow.com/questions/68602889/how-to-apply-physics-to-complex-shapes-matter-js-p5-js
+// from http://paulbourke.net/geometry/polygonmesh/
+// function computeArea(vertices) {
+//   let area = 0;
+//   for (let i = 0; i < vertices.length - 1; i++) {
+//     let v = vertices[i];
+//     let vn = vertices[i + 1];
+//     area += (v.x * vn.y - vn.x * v.y) / 2;
+//   }
+
+//   return area;
+// }
+
+// function computeCenter(vertices) {
+//   let area = computeArea(vertices);
+//   let cx = 0,
+//     cy = 0;
+//   for (let i = 0; i < vertices.length - 1; i++) {
+//     let v = vertices[i];
+//     let vn = vertices[i + 1];
+//     cx += (v.x + vn.x) * (v.x * vn.y - vn.x * v.y) / (6 * area);
+//     cy += (v.y + vn.y) * (v.x * vn.y - vn.x * v.y) / (6 * area);
+//   }
+
+//   return {
+//     x: cx,
+//     y: cy
+//   };
+// }
+
 class Shape {
+  sketch: p5
+  shape: any
+  vertices: {x:number,y:number}[]
+  center: {x: number, h: number}
+  body: Matter.Body
+
   constructor (sketch: p5, shape: any) {
     if (!shape || !shape.vertices) return
     this.sketch = sketch
     this.shape = shape
     this.vertices = buildShapeVertices(sketch, shape)
+    // this.center = computeCenter(this.vertices)
+    // console.log(this.center)
     this.color = shape.color
     this.buildBody()
   }
   buildBody () {
     const options = {
       friction: 0.4,
-      restitution: 0.8,
-      label: 'weight'
+      restitution: 0.8,   
+      render: {
+          fillStyle: this.color,
+      }
     }
     this.body = Bodies.fromVertices(
       this.shape.vertices[0][0],
@@ -81,23 +121,26 @@ class Shape {
       this.vertices,
       options,
     )
-    this.bounds = this.body.bounds
-    this.w = this.bounds.max.x - this.bounds.min.x
-    this.h = this.bounds.max.y - this.bounds.min.y
   }
   show () {
-    console.error('TODO: Calculate the area and center of these vertices')
     this.pos = this.body.position
     this.angle = this.body.angle
-    this.center = Vertices.centre(this.vertices)
+    // this.bounds = this.body.bounds
+    // this.w = this.bounds.max.x - this.bounds.min.x
+    // this.h = this.bounds.max.y - this.bounds.min.y
+    // this.cx = this.bounds.max.x + this.bounds.min.x
+    // this.cy = this.bounds.max.y + this.bounds.min.y
     this.sketch.push()
-    this.sketch.noStroke()
     this.sketch.translate(
-      this.center.x,
-      this.center.y,
+      this.pos.x,
+      this.pos.y,
     )
     this.sketch.rotate(this.angle)
-    this.sketch.fill(this.color)
+    this.sketch.stroke(this.color)
+    this.sketch.strokeWeight(2)
+    this.sketch.noFill()
+    // this.sketch.noStroke()
+    // this.sketch.fill(this.color)
     this.sketch.beginShape()
     const origin = this.shape.vertices[0]
     this.sketch.vertex(0,0)
@@ -157,8 +200,8 @@ const s = (sketch: p5) => {
   sketch.draw = () => {
     sketch.background('#E8D5C4')
     sketch.noStroke()
-    drawUI()
-    matterShapes.forEach((shape) => shape.show())
+    // drawUI()
+    // matterShapes.forEach((shape) => shape.show())
   }
   sketch.setup = async () => {
     // No need to call sketch.createCanvas in instance mode
@@ -167,22 +210,22 @@ const s = (sketch: p5) => {
     // Add boundaries for shapes
     const boundsOpts = { isStatic: true }
     const ground = Bodies.rectangle(
-      SKETCH_WIDTH/2, // x
-      SKETCH_HEIGHT - 5, // y
+      SKETCH_WIDTH / 2 + 1, // x
+      SKETCH_HEIGHT + 6, // y
       SKETCH_WIDTH, // w
       10, // h
       boundsOpts
     )
     const leftWall = Bodies.rectangle(
-      -5,
-      SKETCH_HEIGHT / 2,
-      20,
+      -10,
+      SKETCH_HEIGHT / 2 + 1,
+      10,
       SKETCH_HEIGHT,
       boundsOpts,
     )
     const rightWall = Bodies.rectangle(
-      SKETCH_WIDTH - 5,
-      SKETCH_HEIGHT / 2,
+      SKETCH_WIDTH + 10,
+      SKETCH_HEIGHT / 2 + 1,
       10,
       SKETCH_HEIGHT,
       boundsOpts,
@@ -199,9 +242,10 @@ function attachRenderer (element: HTMLDivElement) {
     engine,
     options: {
       background: 'transparent',
+      wireframes: false,
       wireframeBackground: 'transparent',
-      wireframeStrokeStyle: `rgb(${SKETCH_GREY},${SKETCH_GREY},${SKETCH_GREY})`,
-      showBounds: true,
+      // wireframeStrokeStyle: `rgb(${SKETCH_GREY},${SKETCH_GREY},${SKETCH_GREY})`,
+      // showBounds: true,
       showAngleIndicator: true,
     }
   })
@@ -240,7 +284,7 @@ export default function BezierMatter ({ shapes }): React.ReactNode {
 
   return (
     <div className="relative">
-      <div ref={containerRef}></div>
+      <div className="border-calder-black/10 border-2" ref={containerRef}></div>
       <div className="absolute top-0 left-0" ref={debugRef}></div>
     </div>
   )
