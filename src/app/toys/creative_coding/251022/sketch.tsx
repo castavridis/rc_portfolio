@@ -94,6 +94,7 @@ const s = (sketch) => {
       boundsOpts,
     )
     World.add(world,[ground, leftWall, rightWall])
+
     Runner.run(runner, engine)
     // Engine.run(engine)
   }

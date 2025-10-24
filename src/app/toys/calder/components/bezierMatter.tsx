@@ -37,7 +37,7 @@ const SKETCH_WIDTH = 500
 const SKETCH_HEIGHT = 500
 const SKETCH_GREY = 185
 
-const { Engine, World, Bodies, Runner } = Matter
+const { Engine, World, Bodies, Render, Runner } = Matter
 
 let currMode = 0,
     font,
@@ -46,7 +46,8 @@ let currMode = 0,
     // isEditing,
     pointer,
     pointerDown = false,
-    _shapes
+    _shapes,
+    letMatterDebug
 
 const engine = Engine.create()
 const world = engine.world
@@ -94,29 +95,39 @@ class Shape {
       vertices,
       options,
     )
+    this.bounds = this.body.bounds
+    this.w = this.bounds.max.x - this.bounds.min.x
+    this.h = this.bounds.max.y - this.bounds.min.y
   }
   show () {
-    // console.log(this.body.id, this.body.position, this.body.angle)
+    console.error('TODO: Calculate the area and center of these vertices')
     this.pos = this.body.position
-    this.bounds = this.body.bounds
-    const w = this.bounds.max.x - this.bounds.min.x
-    const h = this.bounds.max.y - this.bounds.min.y
     this.angle = this.body.angle
     this.sketch.push()
     this.sketch.noStroke()
     this.sketch.translate(
-      this.pos.x - w,
-      this.pos.y - h,
+      this.pos.x - this.w/2,
+      this.pos.y - this.h/2,
     )
     this.sketch.rotate(this.angle)
     this.sketch.fill(this.color)
     this.sketch.beginShape()
-    this.sketch.vertex(...this.vertices[0])
+    const origin = this.vertices[0]
+    this.sketch.vertex(0,0)
     for(let i = 1; i < this.vertices.length; i++) {
       const currBezier = this.vertices[i]
-      this.sketch.bezierVertex(currBezier[0],currBezier[1])
-      this.sketch.bezierVertex(currBezier[2],currBezier[3])
-      this.sketch.bezierVertex(currBezier[4],currBezier[5])
+      this.sketch.bezierVertex(
+        currBezier[0]-origin[0],
+        currBezier[1]-origin[1],
+      )
+      this.sketch.bezierVertex(
+        currBezier[2]-origin[0],
+        currBezier[3]-origin[1],
+      )
+      this.sketch.bezierVertex(
+        currBezier[4]-origin[0],
+        currBezier[5]-origin[1],
+      )
     }
     this.sketch.endShape(p5.CLOSE)
     this.sketch.pop()
@@ -126,7 +137,10 @@ class Shape {
 
 const matterShapes = []
 let prevShapes = []
-function buildMatterShapes(sketch: p5, shapes: any[]) {
+function buildMatterShapes(
+  sketch: p5,
+  shapes: any[],
+) {
   const difference = shapes.filter(shape => !prevShapes.includes(shape))
   difference.forEach(
     (shape) =>{
@@ -237,9 +251,28 @@ const s = (sketch: p5) => {
   }
 }
 
+function attachRenderer (element: HTMLDivElement) {
+  const render = Render.create({
+    element,
+    engine,
+    options: {
+      background: 'transparent',
+      wireframeBackground: 'transparent',
+      wireframeStrokeStyle: 'rgb(SKETCH_GREY, SKETCH_GREY, SKETCH_GREY)',
+      showBounds: true,
+      showAngleIndicator: true,
+    }
+  })
+  Render.setSize(render, SKETCH_WIDTH, SKETCH_HEIGHT)
+  Render.run(render)
+  return render
+}
+
 export default function BezierMatter ({ shapes }): React.ReactNode {
   // Following an approach from Claude to use refs for the div and the sketch
   const containerRef = useRef<HTMLDivElement>(null)
+  const debugRef = useRef<HTMLDivElement>(null)
+  const matterRef = useRef<Matter>(null)
   const sketchRef = useRef<p5>(null)
 
   useEffect(() => {
@@ -255,10 +288,22 @@ export default function BezierMatter ({ shapes }): React.ReactNode {
     }
 
     // Clean up sketch
-    return () => sketchRef.current?.remove()
+    return () => { 
+      debugRef.current?.remove()
+      sketchRef.current?.remove()
+    }
   }, [])
 
+  useEffect(() => {
+    if (!matterRef.current) {
+      matterRef.current = attachRenderer(debugRef.current)
+    }
+  }, [debugRef])
+
   return (
-    <div ref={containerRef}></div>
+    <div className="relative">
+      <div ref={containerRef}></div>
+      <div className="absolute top-0 left-0" ref={debugRef}></div>
+    </div>
   )
 }

@@ -314,12 +314,12 @@ export function CalderData (): React.ReactNode {
       </div>
       <div className="flex">
         <div>
-          <h2>p5.js + Canvas</h2>
-          <BezierCanvas shapes={shapes} />
+          <h2>p5.js + Matter</h2>
+          <BezierMatter shapes={shapes} />
         </div>
         <div>
-          <h2>p5.js + Box2D</h2>
-          <BezierMatter shapes={shapes} />
+          <h2>p5.js + Canvas</h2>
+          <BezierCanvas shapes={shapes} />
         </div>
       </div>
     </div>
