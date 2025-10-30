@@ -89,7 +89,7 @@ export default function CalderMobileTestsPage (): React.ReactNode {
   return (
     <div className="font-outfit-100 bg-calder-beige text-calder-black fixed top-0 left-0 right-0 bottom-0 overflow-auto">
       <div className="container mx-auto py-12">
-        <h2 className="text-2xl">Calder</h2>
+        <h2 className="text-2xl">Sandy</h2>
         <h1 className="text-5xl">Mobile Tests</h1>
         <div className="pt-8">
           <div className="flex gap-4">
@@ -98,9 +98,14 @@ export default function CalderMobileTestsPage (): React.ReactNode {
               <p>Components: Attachment to ceiling (crossed-cylinder joint), an arm, two weights (one fixed, one with a crossed-cylinder joint)</p>
               <Canvas className="border-2">
                 <Physics>
-                  <Arm right={<CounterWeight />} />
-                  <OrbitControls />
+                  {/* <Arm right={<CounterWeight />} /> */}
+                  <RigidBody>
+                    <mesh position={[-5,1,-5]}>
+                      <boxGeometry args={[10,1,10]} />
+                    </mesh>
+                  </RigidBody>
                 </Physics>
+                <OrbitControls />
               </Canvas>
             </div>
             <div className="w-full h-[500px]">

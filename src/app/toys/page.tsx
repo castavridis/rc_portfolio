@@ -5,7 +5,7 @@ export default function Toys () {
     <div>
       <ul>
         <li>
-          <Link href="/toys/calder/">Calder</Link>
+          <Link href="/toys/sandy/">Sandy</Link>
         </li>
         <li>
           <Link href="/toys/phonics/">Phonics</Link>
