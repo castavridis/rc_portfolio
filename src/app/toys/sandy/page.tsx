@@ -73,7 +73,7 @@ function CounterWeight(): React.ReactElement {
 
 export default function CalderPage (): React.ReactNode {
   return (
-    <div className="font-outfit-100 bg-calder-beige text-calder-black fixed top-0 left-0 right-0 bottom-0 overflow-auto">
+    <div className="font-outfit-100 bg-calder-beige text-calder-black overflow-auto">
       <div className="container mx-auto py-12">
         <h1 className="text-9xl">Sandy</h1>
         <p>Sandy is a visualization tool for Calder, a commutative esolang by <a href="https://github.com/demaere-oiie/calder/tree/main">Dave Long</a>. Calder named after the artist, Alexander "Sandy" Calder (1898–1976).</p>
