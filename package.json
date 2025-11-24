@@ -13,7 +13,6 @@
   "keywords": [],
   "author": "C Stavridis <castavridis@gmail.com>",
   "license": "ISC",
-  "packageManager": "pnpm@10.5.2",
   "dependencies": {
     "@dimforge/rapier3d": "^0.19.2",
     "@gsap/react": "^2.1.2",
@@ -25,7 +24,7 @@
     "gsap": "^3.13.0",
     "lucide-react": "^0.544.0",
     "matter-js": "^0.20.0",
-    "next": "^15.5.4",
+    "next": "^16.0.2-canary.23",
     "p5": "^2.0.5",
     "poly-decomp": "^0.3.0",
     "postcss": "^8.5.6",
@@ -44,8 +43,10 @@
     "@types/p5": "^1.7.6",
     "@types/react": "19.1.14",
     "@types/three": "^0.180.0",
+    "ci": "^2.3.0",
     "eslint": "^9.36.0",
     "eslint-config-next": "15.5.4",
-    "typescript": "5.9.2"
+    "prettier": "^3.6.2",
+    "typescript": "5.9.3"
   }
 }
