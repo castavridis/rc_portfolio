@@ -1,0 +1,26 @@
+meta {
+  name: Open Meteo
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://api.open-meteo.com/v1/forecast?latitude=38.627003&longitude=-90.199402&current=temperature_2m,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch
+  body: none
+  auth: inherit
+}
+
+params:query {
+  latitude: 38.627003
+  longitude: -90.199402
+  current: temperature_2m,wind_speed_10m
+  temperature_unit: fahrenheit
+  wind_speed_unit: mph
+  precipitation_unit: inch
+  ~hourly: temperature_2m,relative_humidity_2m,wind_speed_10m
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

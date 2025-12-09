@@ -1,0 +1,26 @@
+meta {
+  name: Open Meteo 2
+  type: http
+  seq: 3
+}
+
+get {
+  url: https://api.open-meteo.com/v1/forecast?latitude=38.627003&longitude=-90.199402&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,cloud_cover,precipitation,rain,showers,snowfall,wind_speed_10m,wind_direction_10m,wind_gusts_10m,pressure_msl,surface_pressure&forecast_days=1&wind_speed_unit=mph&temperature_unit=fahrenheit&precipitation_unit=inch
+  body: none
+  auth: inherit
+}
+
+params:query {
+  latitude: 38.627003
+  longitude: -90.199402
+  current: temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,cloud_cover,precipitation,rain,showers,snowfall,wind_speed_10m,wind_direction_10m,wind_gusts_10m,pressure_msl,surface_pressure
+  forecast_days: 1
+  wind_speed_unit: mph
+  temperature_unit: fahrenheit
+  precipitation_unit: inch
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

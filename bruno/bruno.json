@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "rc portfolio bruno",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
