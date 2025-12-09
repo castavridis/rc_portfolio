@@ -3,6 +3,7 @@
 import React from 'react'
 import '../styles/globals.css'
 import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 
 class TestClass {
   variable = 0
@@ -16,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode,
 }) {
   const pathname = usePathname()
-  let bodyClasses = ""
+  let bodyClasses = "h-full"
   if (pathname.indexOf('sandy') > 0) {
     bodyClasses += " bg-calder-beige"
   }
@@ -25,8 +26,14 @@ export default function RootLayout({
       <body>
         {/* Main layout */}
         <div className={bodyClasses}>
-          <header className="container mx-auto py-3 text-xl">
-            C Stavridis
+          <header className="text-xl flex py-8 justify-between container mx-auto">
+            <div>
+              <Link href="/">C Stavridis</Link>
+            </div>
+            <div className="flex gap-4">
+              <Link className="underline" href="#">Work</Link>
+              <Link className="underline" href="#">About</Link>
+            </div>
           </header>
           { children }
         </div>
