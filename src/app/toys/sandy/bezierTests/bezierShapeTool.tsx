@@ -44,12 +44,16 @@ let currMode = 0,
     pointer,
     pointerDown = false
 
+export type BezierShape = {
+  vertices: any[]
+  color: string
+}
 const s = (sketch: p5, addShape: () => void) => {
-  let shapes = []
-  let currShape = null
-  let currBezier = [] // [ocpX,ocpY,dcpX,dcpY,dX,dY]
-  let prevBezier = []
-  let currOrigin = []
+  let shapes: BezierShape[] = []
+  let currShape: BezierShape = null
+  let currBezier: number[] = [] // [ocpX,ocpY,dcpX,dcpY,dX,dY]
+  let prevBezier: number[] = []
+  let currOrigin: number[] = []
   // let prevOrigin = []
   function buildBezier () {
     if (!isDrawing) {

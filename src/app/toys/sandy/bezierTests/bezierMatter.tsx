@@ -3,10 +3,10 @@
 
 "use client"
 
-import * as PolyDecomp from 'poly-decomp'
-import { Grid } from 'pretty-grid'
 import { Common, Engine, World, Bodies, Bounds, Render, Runner, Vertices, Body } from 'matter-js'
 import p5 from 'p5'
+import * as PolyDecomp from 'poly-decomp'
+import { Grid } from 'pretty-grid'
 import { useCallback, useEffect, useRef } from 'react'
 
 const SHAPE_COLORS = [
@@ -21,17 +21,17 @@ const SKETCH_HEIGHT = 500
 const SKETCH_GREY = 150
 const BEZIER_RESOLUTION = 24
 
-let currMode = 0,
-    font,
-    grid,
-    prevShapes = [],
-    letMatterDebug
-
 const matterShapes = []
 const engine = Engine.create()
 const world = engine.world
 const runner = Runner.create()
 
+let currMode = 0,
+    grid,
+    prevShapes = [],
+    letMatterDebug
+
+//
 function buildShapeVertices(sketch: p5, shape: any) {
   const vertices = []
   let originVertex = shape.vertices[0]
@@ -60,36 +60,6 @@ function buildShapeVertices(sketch: p5, shape: any) {
   return vertices
 }
 
-// https://stackoverflow.com/questions/68602889/how-to-apply-physics-to-complex-shapes-matter-js-p5-js
-// from http://paulbourke.net/geometry/polygonmesh/
-// function computeArea(vertices) {
-//   let area = 0;
-//   for (let i = 0; i < vertices.length - 1; i++) {
-//     let v = vertices[i];
-//     let vn = vertices[i + 1];
-//     area += (v.x * vn.y - vn.x * v.y) / 2;
-//   }
-
-//   return area;
-// }
-
-// function computeCenter(vertices) {
-//   let area = computeArea(vertices);
-//   let cx = 0,
-//     cy = 0;
-//   for (let i = 0; i < vertices.length - 1; i++) {
-//     let v = vertices[i];
-//     let vn = vertices[i + 1];
-//     cx += (v.x + vn.x) * (v.x * vn.y - vn.x * v.y) / (6 * area);
-//     cy += (v.y + vn.y) * (v.x * vn.y - vn.x * v.y) / (6 * area);
-//   }
-
-//   return {
-//     x: cx,
-//     y: cy
-//   };
-// }
-
 class Shape {
   sketch: p5
   shape: any
@@ -102,8 +72,6 @@ class Shape {
     this.sketch = sketch
     this.shape = shape
     this.vertices = buildShapeVertices(sketch, shape)
-    // this.center = computeCenter(this.vertices)
-    // console.log(this.center)
     this.color = shape.color
     this.buildBody()
   }
