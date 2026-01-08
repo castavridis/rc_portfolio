@@ -1,0 +1,12 @@
+/**
+  Re: `transform-style: preserve-3d;`
+  this property children with 3d properties set
+  to maintain the representation of those properties.
+  The initial value is `flat`. If flat, the 3d values of the properties for the children will be ignored and the children will look just like flat HTML elements.
+*/
+.rainbow-roll {
+  background-size: cover;
+  background-image: url("/assets/img/rainbow-bg-by-martina-stokow.jpg");
+  transition: transform 0.1s ease-out;
+  transform-style: preserve-3d;
+}
