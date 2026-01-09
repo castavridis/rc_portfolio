@@ -3,7 +3,17 @@
 
 "use client"
 
-import { Common, Engine, World, Bodies, Bounds, Render, Runner, Vertices, Body } from 'matter-js'
+import { 
+  Bodies, 
+  Body,
+  Bounds, 
+  Common, 
+  Engine, 
+  Render, 
+  Runner, 
+  Vertices, 
+  World, 
+} from 'matter-js'
 import p5 from 'p5'
 import * as PolyDecomp from 'poly-decomp'
 import { Grid } from 'pretty-grid'
@@ -19,7 +29,8 @@ const SHAPE_COLORS = [
 const SKETCH_WIDTH = 500
 const SKETCH_HEIGHT = 500
 const SKETCH_GREY = 150
-const BEZIER_RESOLUTION = 24
+
+const BEZIER_RESOLUTION = 24 // The number of points between bezier points that should be sampled
 
 const matterShapes = []
 const engine = Engine.create()
@@ -31,7 +42,6 @@ let currMode = 0,
     prevShapes = [],
     letMatterDebug
 
-//
 function buildShapeVertices(sketch: p5, shape: any) {
   const vertices = []
   let originVertex = shape.vertices[0]
@@ -63,7 +73,7 @@ function buildShapeVertices(sketch: p5, shape: any) {
 class Shape {
   sketch: p5
   shape: any
-  vertices: {x:number,y:number}[]
+  vertices: {x:number, y:number}[]
   center: {x: number, h: number}
   body: Matter.Body
 
