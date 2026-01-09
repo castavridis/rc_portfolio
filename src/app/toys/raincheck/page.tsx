@@ -70,49 +70,83 @@ export default function RainCheckPage () {
   }, [])
 
   return (
-    <div className="gap-1.5 flex-col">
-      <div>
-        <p>
-          Raincheck is a toy that helps you send a beautiful invitation when you need to take a rain check with a friend.
-        </p>
-        <p>
-          <strong>
-            Features
-          </strong>
-        </p>
-        <ul className="list-disc pl-4">
-          <li>Add to Calendar Button: https://add-to-calendar-button.com/examples</li>
-          <li>Add form with the following fields:</li>
+    <div>    
+      <h1 className="text-7xl">Raincheck</h1>     
+      <p className="text-2xl mb-4">
+         Send a beautiful invitation when you need to take a raincheck with a loved one.
+      </p>
+      <div className="flex">
+        <div> 
+          <p>
+            <strong>
+              Features
+            </strong>
+          </p>
           <ul className="list-disc pl-4">
-            <li>To</li>
-            <li>From</li>
-            <li>Title</li>
-            <li>Message</li>
-            <li>Category/Reason (sick, weather, etc.)</li>
-            <li>Location</li>
-            <li>Date</li>
-            <li>Time</li>
+            <li className="font-bold">Sender</li>
+            <ul className="list-disc pl-4">
+              <li>Form</li>
+              <li>Save raincheck</li>
+              <li>Send raincheck</li>
+            </ul>
+            <li className="font-bold">Recipient</li>
+            <ul className="list-disc pl-4">
+              <li>
+                <a href="https://add-to-calendar-button.com/examples" className="underline text-blue-700">
+                  Add to Calendar Button
+                </a>
+              </li>
+              <li>PWA notifications for Accept/Reject</li>
+            </ul>
+            <li className="font-bold">Handle the following data:</li>
+            <ul className="list-disc pl-4">
+              <li className="font-bold">Core Data</li>
+              <ul className="list-disc pl-4">
+                <li>To</li>
+                <li>From</li>
+                <li>Event name</li>
+                <li>Message</li>
+                <li>Category/Reason (sick, weather, etc.) - create different base check designs</li>
+                <li>Cancellation severity - (no biggie, easy to reschedule &gt; big deal = coin, once-in-a-lifetime event = placquard)</li>
+              </ul>
+              <li className="font-bold">Original Date – Used for security printing effects</li>
+              <ul className="list-disc pl-4">
+                <li>Location – Lat, Long down to seconds?</li>
+                <li>Datetime – UNIX time</li>
+              </ul>
+              <li className="font-bold">Proposed Data - Displayed in a human-readable format</li>
+              <ul className="list-disc pl-4">
+                <li>Location</li>
+                <li>Date</li>
+                <li>Time</li>
+              </ul>
+              <li className="font-bold">Raincheck Metadata</li>
+              <ul className="list-disc pl-4">
+                <li>Date issued (e.g. created)</li>
+                <li>Location issued from</li>
+                <li>Time</li>
+              </ul>
+            </ul>
           </ul>
-        </ul>
 
-        <p>Ideas from converation with Evan Gedrich Pintado</p>
-        <ul className="list-disc pl-4">
-          <li>certainty of specific future thing, day and time offered (required) not having to make plan again</li>
-          <li>put forward options for user</li>
-          <li>different kinds of "certificates" based</li>
-          <li>ticket form is based on how severe the issue is (coin = not a big deal) – (tapestry = big deal issue) </li>
-        </ul>
-      </div>
-
-      <div>
-        <h2>Sample Raincheck</h2>
-      </div>
-      <div className="rainbow-roll w-80 h-60 rounded-sm">
-        <div className="m-4 absolute top-2 left-2 right-2 bottom-2 bg-white rounded-sm">
-          <p>To: April Grieman</p>
-          <p>From: C Stavridis</p>
-          <div className="hologram"></div>
-          <div className="seal font-mono">OFFICIAL&nbsp;RAINCHECK&nbsp;</div>
+          <p className="font-bold mt-4">Ideas from converation with Evan Gedrich Pintado</p>
+          <ul className="list-disc pl-4">
+            <li>certainty of specific future thing, day and time offered (required) not having to make plan again</li>
+            <li>put forward options for user</li>
+            <li>different kinds of "certificates" based</li>
+            <li>ticket form is based on how severe the issue is (coin = not a big deal) – (tapestry = big deal issue) </li>
+          </ul>
+        </div>
+        <div>
+          <h2>Sample Raincheck</h2>
+          <div className="rainbow-roll w-80 h-60 rounded-sm">
+            <div className="m-4 absolute top-2 left-2 right-2 bottom-2 bg-white shadow-sm text-black rounded-sm">
+              <p>To: April Grieman</p>
+              <p>From: C Stavridis</p>
+              <div className="hologram"></div>
+              <div className="seal font-mono">OFFICIAL&nbsp;RAINCHECK&nbsp;</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
