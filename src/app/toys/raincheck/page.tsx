@@ -73,10 +73,19 @@ export default function RainCheckPage () {
     <div>    
       <h1 className="text-7xl">Raincheck</h1>     
       <p className="text-2xl mb-4">
-         Send a beautiful invitation when you need to take a raincheck with a loved one.
+        For when you need to take a raincheck with someone you care about and you want to show them they're important to you.
       </p>
-      <div className="flex">
-        <div> 
+      <div className="flex flex-wrap gap-4">
+        <div>
+          <p className="font-bold">Inspiration</p>
+          <img className="w-full max-w-full h-auto" src="https://d2w9rnfcy7mm78.cloudfront.net/42513465/original_6d9beb4bfa401743160eabcf9ffa095d.jpg?1767979735?bc=0" alt="Travis Purrington's US banknote proposal with how data transfers over" />
+          <div className="flex w-full">
+            <img className="block max-w-full h-auto w-[50%]" src="https://d2w9rnfcy7mm78.cloudfront.net/42512657/original_70dfab1b7433133f16aea20466b4e304.jpg?1767978056?bc=0" alt="Australian 50 dollar banknote" />
+            <img className="block max-w-full h-auto w-[50%]" src="https://d2w9rnfcy7mm78.cloudfront.net/42512590/original_ee1964b32ae75272a47a2d8f0d52eb4b.jpg?1767977978?bc=0" alt="Swiss 50 franc note" />
+          </div>
+        </div>
+        <div className="basis-full"></div>
+        <div className="w-[45%]"> 
           <p>
             <strong>
               Features
@@ -137,8 +146,8 @@ export default function RainCheckPage () {
             <li>ticket form is based on how severe the issue is (coin = not a big deal) – (tapestry = big deal issue) </li>
           </ul>
         </div>
-        <div>
-          <h2>Sample Raincheck</h2>
+        <div className="w-[45%]"> 
+          <h2 className="font-bold">Sample Raincheck</h2>
           <div className="rainbow-roll w-80 h-60 rounded-sm">
             <div className="m-4 absolute top-2 left-2 right-2 bottom-2 bg-white shadow-sm text-black rounded-sm">
               <p>To: April Grieman</p>
