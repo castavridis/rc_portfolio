@@ -46,8 +46,31 @@ export default function RainCheckPage () {
     }
   }, [])
 
+  useEffect(() => {
+    const seal = document.querySelector('.seal')
+    if (!seal) return
+
+    const text = seal.textContent || ''
+    seal.innerHTML = ''
+
+    const chars = text.split('')
+    const radius = 50
+    const angleStep = 360 / chars.length
+
+    chars.forEach((char, i) => {
+      const span = document.createElement('span')
+      span.textContent = char === ' ' ? '\u00A0' : char
+      span.style.position = 'absolute'
+      span.style.left = '50%'
+      span.style.top = '50%'
+      span.style.transformOrigin = '0 0'
+      span.style.transform = `rotate(${i * angleStep}deg) translateY(-${radius}px)`
+      seal.appendChild(span)
+    })
+  }, [])
+
   return (
-    <div>
+    <div className="gap-1.5 flex-col">
       <div>
         <p>
           Raincheck is a toy that helps you send a beautiful invitation when you need to take a rain check with a friend.
@@ -56,46 +79,42 @@ export default function RainCheckPage () {
           <strong>
             Features
           </strong>
-          <ul>
-            <li>Add to Calendar Button: https://add-to-calendar-button.com/examples</li>
-            <li>Add form with the following fields:</li>
-            <ul>
-              <li>To</li>
-              <li>From</li>
-              <li>Title</li>
-              <li>Message</li>
-              <li>Category/Reason (sick, weather, etc.)</li>
-              <li>Location</li>
-              <li>Date</li>
-              <li>Time</li>
-            </ul>
-          </ul>
         </p>
+        <ul className="list-disc pl-4">
+          <li>Add to Calendar Button: https://add-to-calendar-button.com/examples</li>
+          <li>Add form with the following fields:</li>
+          <ul className="list-disc pl-4">
+            <li>To</li>
+            <li>From</li>
+            <li>Title</li>
+            <li>Message</li>
+            <li>Category/Reason (sick, weather, etc.)</li>
+            <li>Location</li>
+            <li>Date</li>
+            <li>Time</li>
+          </ul>
+        </ul>
+
+        <p>Ideas from converation with Evan Gedrich Pintado</p>
+        <ul className="list-disc pl-4">
+          <li>certainty of specific future thing, day and time offered (required) not having to make plan again</li>
+          <li>put forward options for user</li>
+          <li>different kinds of "certificates" based</li>
+          <li>ticket form is based on how severe the issue is (coin = not a big deal) – (tapestry = big deal issue) </li>
+        </ul>
+      </div>
+
+      <div>
+        <h2>Sample Raincheck</h2>
       </div>
       <div className="rainbow-roll w-80 h-60 rounded-sm">
-        <div className="p-4">
-          {/* FORM HERE */}
+        <div className="m-4 absolute top-2 left-2 right-2 bottom-2 bg-white rounded-sm">
+          <p>To: April Grieman</p>
+          <p>From: C Stavridis</p>
+          <div className="hologram"></div>
+          <div className="seal font-mono">OFFICIAL&nbsp;RAINCHECK&nbsp;</div>
         </div>
       </div>
     </div>
   )
 }
-
-/**
- * 
-
-
-
-certainty of specific future thing, day and time offered (required) not having to make plan again
-
-
-
-put forward options for user
-
-
-
-ticket based on how severe the issue is (coin = not a big deal) – (tapestry = big deal issue) 
-
-
- * 
- */
