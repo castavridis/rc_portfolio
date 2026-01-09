@@ -99,3 +99,9 @@
     transparent 50%
   );
 }
+
+.guilloche {
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+}
