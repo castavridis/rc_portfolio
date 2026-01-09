@@ -29,3 +29,73 @@
 .rainbow-roll:hover::before {
   opacity: 1;
 }
+
+.seal {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 20px auto;
+}
+
+@keyframes hologram-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.hologram {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  right: 20px;
+  bottom: 20px;
+  border-radius: 50%;
+  background: linear-gradient(
+    45deg,
+    #ff0080,
+    #ff8c00,
+    #40e0d0,
+    #7b68ee,
+    #ff1493,
+    #00ced1,
+    #ff0080
+  );
+  background-size: 400% 400%;
+  animation: hologram-shift 15s ease-in-out infinite;
+  box-shadow:
+    0 0 20px rgba(255, 0, 128, 0.5),
+    inset 0 0 20px rgba(255, 255, 255, 0.3);
+  opacity: 0.9;
+}
+
+.hologram::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.1) 2px,
+    rgba(255, 255, 255, 0.1) 4px
+  );
+}
+
+.hologram::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.8) 0%,
+    transparent 50%
+  );
+}
