@@ -133,9 +133,9 @@ export default function RainCheckPage () {
 
   return (
     <div>    
-      <h1 className="text-7xl">Raincheck</h1>     
+      <h1 className="text-7xl">Rain Check</h1>     
       <p className="text-2xl mb-4">
-        For when you need to send a raincheck to someone important to you.
+        For when you need to send a rain check to someone important to you.
       </p>
       <div className="flex flex-wrap gap-4">
         <div>
