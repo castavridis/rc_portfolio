@@ -128,6 +128,9 @@
   box-shadow: inset 0 0 2px rgba(255, 179, 0, 0.5); /* to add shadow to box edges, too */
 }
 
+.seal-container {
+  filter: drop-shadow(0 0 3px rgba(0,0,0,0.5));
+}
 .seal-mask {
   mask-image: url('/assets/img/seal-mask.jpeg');
   mask-size: cover;

@@ -234,8 +234,10 @@ export default function RainCheckPage () {
             <div className="card w-72 h-112 m-8 relative backdrop-blur-xs">
               <div className="w-full h-full relative rounded-sm">
                 <div className="absolute top-0 left-0 right-0 bottom-0 bg-indigo-400 opacity-15"></div>
+                <div className="seal-container w-full h-full flex">
                 <div className="seal-mask w-full h-full flex justify-center items-center bg-amber-50 text-black rounded-sm">
-                  Clear Seal Test
+                      Clear Seal Test
+                    </div>
                 </div>
               </div>
             </div>
