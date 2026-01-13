@@ -13,6 +13,12 @@
   overflow: hidden;
 }
 
+.card {
+  transform: perspective(1500px) rotateX(0deg) rotateY(0deg) translateZ(20px);
+  transition: transform 0.1s ease-out;  
+  transform-style: preserve-3d;
+}
+
 .rainbow-roll::before {
   content: '';
   position: absolute;
@@ -104,4 +110,31 @@
   position: absolute;
   pointer-events: none;
   z-index: 10;
+}
+
+/* Hides the dropshadow used to create depth in the foil */
+.foil-container {
+  overflow: hidden;
+  background: linear-gradient(25deg, rgba(255, 255, 255, 0) 30.25%, #fff 48.74%, rgba(255, 255, 254, 0) 66.39%);
+}
+
+.foil-mask {
+  mask-image: url('#foil-mask-inverted');
+  mask-size: 405px; /* A size needs to be declared to position */
+  mask-position: 0% 25%;
+}
+.foil { 
+  filter: drop-shadow(0 0 3px rgba(255, 179, 0, 0.5));
+  box-shadow: inset 0 0 2px rgba(255, 179, 0, 0.5); /* to add shadow to box edges, too */
+}
+
+.seal-mask {
+  mask-image: url('/assets/img/seal-mask.jpeg');
+  mask-size: cover;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-mode: luminance;
+  /* background-image: url('/assets/img/seal-mask.jpeg');
+  background-size: cover;
+  background-position: center; */
 }
