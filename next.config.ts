@@ -14,6 +14,17 @@ const nextConfig: NextConfig = {
         source: '/toys/calder/:page',
         destination: '/toys/sandy/:page',
         permanent: true,
+      },      // Basic redirect
+      {
+        source: '/toys/raincheck',
+        destination: '/toys/rain_check',
+        permanent: true,
+      },
+      // Wildcard path matching
+      {
+        source: '/toys/raincheck/:page',
+        destination: '/toys/rain_check/:page',
+        permanent: true,
       },
     ]
   },
