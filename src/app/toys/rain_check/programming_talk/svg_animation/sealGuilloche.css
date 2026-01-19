@@ -1,0 +1,15 @@
+.seal-guilloche-content {
+  mask-image: url("#mask-seal-guilloche");
+  mask-size: 1056px;
+  padding: 0; /* reset */
+  padding-bottom: calc(100% * 3 / 4);
+   position: absolute; 
+ height: 100%; 
+ width: 100%; 
+ left: 0; 
+ top: 0;
+}
+
+#svg-seal-guilloche g {
+  transform: scale(10);
+}
