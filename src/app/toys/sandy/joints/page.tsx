@@ -15,29 +15,30 @@ function SphericalJointTest (): React.ReactElement {
   //   [0,0,0],
   //   [0,0,0.1],
   // ])
-  return (<>
-    <RigidBody ref={rigidRef} type="fixed">
-      <Torus args={[1,0.25]} visible={false}>
-        <meshBasicMaterial color="transparent" />
-      </Torus>
-    </RigidBody>
-          <Torus args={[1,0.25]} position={[0,-1.5,0]}>
+  return (
+    <>
+      <RigidBody ref={rigidRef} type="fixed">
+        <Torus args={[1,0.25]} visible={false}></Torus>
+      </RigidBody>
+      <Torus args={[1,0.25]} position={[0,-1.5,0]}>
         <meshBasicMaterial color="red" />
       </Torus>
-    <RigidBody ref={tBRef} linearDamping={0.25} angularDamping={0.5}>
-      <Torus args={[1,0.25]} position={[0,-1,-1]} rotation={[0, 1.65, 0]}>
-        <meshBasicMaterial color="blue" />
-      </Torus>
-      <Box args={[10, 0.25, 0.25]} position={[1,-2,-1]}>
-        <meshBasicMaterial color="pink" />
-      </Box>
-    </RigidBody>
-  </>)
+      {/* Higher linearDamping looks more convincing */}
+      <RigidBody ref={tBRef} linearDamping={0.75} angularDamping={0.5}>
+        <Torus args={[1,0.25]} position={[0,-1,-1]} rotation={[0, 1.65, 0]}>
+          <meshBasicMaterial color="blue" />
+        </Torus>
+        <Box args={[15, 0.5, 0.5]} position={[5,-2,-1]}>
+          <meshBasicMaterial color="hotpink" />
+        </Box>
+      </RigidBody>
+    </>
+  )
 }
 
 export default function JointsPage() {
   return (
-    <div className="w-full h-100">
+    <div className="w-full h-[80vh]">
       <Canvas>
         <Physics debug>
           <SphericalJointTest />
