@@ -215,7 +215,7 @@ function PhysicsTest (): React.ReactNode {
   // NOTE 25-11-14: Why am I using Suspense again? To combat a Vercel issue?
   return (
     <Suspense>
-      <Physics gravity={[0,-9.81,0]} timeStep="vary">
+      <Physics gravity={[0,-9.81,0]} timeStep="vary" debug>
         <CeilingBody />
         <CalderArm />
       </Physics>
