@@ -1,9 +1,10 @@
 'use client'
 
-import { Box, CameraControls, OrbitControls, Torus } from '@react-three/drei';
-import { Canvas } from '@react-three/fiber';
-import { Physics, RigidBody, useSphericalJoint, useRevoluteJoint } from '@react-three/rapier';
+import { Box, CameraControls, OrbitControls, Sphere, Torus } from '@react-three/drei';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { Physics, RigidBody, useSphericalJoint, useRevoluteJoint, CuboidCollider, BallCollider, RigidBodyAutoCollider, RapierRigidBody } from '@react-three/rapier';
 import { useRef, useState } from 'react';
+import { Vector3 } from 'three';
 
 function degToRads(degrees: number) {
   return (degrees % 360) * Math.PI / 180
@@ -44,27 +45,32 @@ function SphericalJointTest ({
 
       {/* Higher linearDamping looks more convincing */}
       <RigidBody ref={terminalRef} linearDamping={0.75} angularDamping={0.5} type={rigidBodyType} position={[0,-1.75,1]}>
-        <Torus args={[0.75,0.25]} position={[0,0.5,-1]} rotation={[0, degToRads(90), 0]}>
+        <Torus onClick={()=>{}} args={[0.75,0.25]} position={[0,0.5,-1]} rotation={[0, degToRads(90), 0]}>
           <meshLambertMaterial color="greenyellow" />
         </Torus>
         <Box args={[15, 0.5, 0.5]} position={[5,-0.25,-1]}>
           <meshPhysicalMaterial transmission={1.0} thickness={5.0} metalness={0.0} roughness={0.3} color="hotpink" />
         </Box>
-        <Box args={[3,6.25,2]} position={[-4, -0.25, -1]}></Box>
+        <Box args={[3,6.25,2]} position={[-4, -0.25, -1]}>
+          <meshLambertMaterial color="hotpink" />
+        </Box>
         {/* <Box args={[3,2,1]} position={[11, -0.25, -1]}></Box> */}
-        <Torus args={[0.5,0.125]} rotation={[degToRads(-90), degToRads(45), degToRads(0)]} position={[12.75,-0.5,-1]} visible={false} />
+          <Torus args={[1,0.25]} position={[13.5,-0.25,-1]} />
       </RigidBody>
 
       <RigidBody ref={armRef} type={rigidBodyType} position={[14,-4,1]} linearDamping={1.0} angularDamping={1.0}>
-
         <Torus args={[0.75,0.25]} position={[0,0.5,-1]} rotation={[0, degToRads(90), 0]}>
           <meshLambertMaterial color="greenyellow" />
         </Torus>
         <Box args={[15, 0.5, 0.5]} position={[0,-0.25,-1]}>
           <meshPhysicalMaterial transmission={1.0} thickness={5.0} metalness={0.0} roughness={0.3} color="hotpink" />
         </Box>
-        <Box args={[1,2,1]} position={[-8, -0.25, -1]}></Box>
-        <Box args={[1,2,1]} position={[8, -0.25, -1]}></Box>
+        <Box args={[1,2,1]} position={[-8, -0.25, -1]}>
+          <meshLambertMaterial color="hotpink" />
+        </Box>
+        <Box args={[1,2,1]} position={[8, -0.25, -1]}>
+          <meshLambertMaterial color="hotpink" />
+        </Box>
       </RigidBody>
     </>
   )
@@ -73,8 +79,27 @@ function SphericalJointTest ({
 function Backdrop () {
   return (
     <Box args={[1000, 1000, 0.5]} position={[0,0,-50]}>
-      <meshLambertMaterial color="#F00" />
+      <meshLambertMaterial color="#100" />
     </Box>
+  )
+}
+
+/**
+ * via: https://codesandbox.io/p/sandbox/xy8c8z?file=%2Fsrc%2FApp.js%3A91%2C1-101%2C2
+ */
+function Pointer({ vec = new Vector3(0,0,0) }) {
+  const ref = useRef<RapierRigidBody>(null)
+  useFrame(({ pointer, viewport }) => {
+    ref.current?.setNextKinematicTranslation(vec.set((pointer.x * viewport.width) / 2, (pointer.y * viewport.height) / 2, 0))
+  })
+  return (
+    <RigidBody position={[0, 0, 0]} type="kinematicPosition" colliders={false} ref={ref}>
+      <BallCollider args={[1]}>
+        <Sphere args={[1]}>
+          <meshLambertMaterial color="hotpink" />
+        </Sphere>
+      </BallCollider>
+    </RigidBody>
   )
 }
 
@@ -90,6 +115,7 @@ export default function JointsPage() {
         <directionalLight intensity={50} color="pink" position={[0, -5, 5]} />
         <Physics key={physicsKey} debug>
           <SphericalJointTest dynamic={dynamic} />
+          <Pointer />
         </Physics>
         <OrbitControls />
         <CameraControls />
