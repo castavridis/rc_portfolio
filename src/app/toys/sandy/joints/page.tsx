@@ -44,18 +44,24 @@ function SphericalJointTest ({
       </RigidBody>
 
       {/* Higher linearDamping looks more convincing */}
-      <RigidBody ref={terminalRef} linearDamping={0.75} angularDamping={0.5} type={rigidBodyType} position={[0,-1.75,1]}>
-        <Torus onClick={()=>{}} args={[0.75,0.25]} position={[0,0.5,-1]} rotation={[0, degToRads(90), 0]}>
-          <meshLambertMaterial color="greenyellow" />
-        </Torus>
-        <Box args={[15, 0.5, 0.5]} position={[5,-0.25,-1]}>
-          <meshPhysicalMaterial transmission={1.0} thickness={5.0} metalness={0.0} roughness={0.3} color="hotpink" />
-        </Box>
-        <Box args={[3,6.25,2]} position={[-4, -0.25, -1]}>
-          <meshLambertMaterial color="hotpink" />
-        </Box>
+      <RigidBody ref={terminalRef} linearDamping={0.75} angularDamping={0.5} type={rigidBodyType} position={[0,-1.75,1]} colliders={false}>
+        <CuboidCollider args={[1,1,0.25]} position={[0,0.5,-1]} rotation={[0, degToRads(90), 0]}>
+          <Torus onClick={()=>{}} args={[0.75,0.25]}>
+            <meshLambertMaterial color="greenyellow" />
+          </Torus>
+        </CuboidCollider>
+        <CuboidCollider args={[7.5, 0.25, 0.25]} position={[5,-0.25,-1]}>
+          <Box args={[15, 0.5, 0.5]}>
+            <meshPhysicalMaterial transmission={1.0} thickness={5.0} metalness={0.0} roughness={0.3} color="hotpink" />
+          </Box>
+        </CuboidCollider>
+        <CuboidCollider args={[3/2,6.25/2,2/2]} position={[-4, -0.25, -1]}>
+          <Box args={[3,6.25,2]}>
+            <meshLambertMaterial color="hotpink" />
+          </Box>
+        </CuboidCollider>
         {/* <Box args={[3,2,1]} position={[11, -0.25, -1]}></Box> */}
-          <Torus args={[1,0.25]} position={[13.5,-0.25,-1]} />
+          <Torus args={[0.75,0.25]} position={[13.5,-0.25,-1]} />
       </RigidBody>
 
       <RigidBody ref={armRef} type={rigidBodyType} position={[14,-4,1]} linearDamping={1.0} angularDamping={1.0}>
