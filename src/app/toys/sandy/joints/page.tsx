@@ -15,9 +15,10 @@ function SphericalJointTest ({
 }: {
   dynamic: boolean
 }): React.ReactElement {
-  const ceilingRef = useRef(null)
-  const terminalRef = useRef(null)
-  const armRef = useRef(null)
+  const [color, setColor] = useState("blue");
+  const ceilingRef = useRef<RapierRigidBody>(null)
+  const terminalRef = useRef<RapierRigidBody>(null)
+  const armRef = useRef<RapierRigidBody>(null)
   /** Previous issues, rigid bodies were intersecting with each other creating a jittery experience as the engine tried to resolve the colliding bodies. For spherical or revolute, position the visual mesh where I'd like the joint to seem but place the actual joint on a rigid body well outside the bounds of the body rotating */
   useSphericalJoint(
     ceilingRef,
@@ -27,8 +28,9 @@ function SphericalJointTest ({
   useSphericalJoint(
     terminalRef,
     armRef,
-    [[13.25,0,-1],[0,3,-1]]
+    [[13.5,0,-1],[0,1.5,-1]]
   )
+  
   const rigidBodyType = dynamic ? "dynamic" : "fixed"
   // useRevoluteJoint(rigidRef, tBRef, [
   //   [0,-2,1],
@@ -46,7 +48,7 @@ function SphericalJointTest ({
       {/* Higher linearDamping looks more convincing */}
       <RigidBody ref={terminalRef} linearDamping={0.75} angularDamping={0.5} type={rigidBodyType} position={[0,-1.75,1]} colliders={false}>
         <CuboidCollider args={[1,1,0.25]} position={[0,0.5,-1]} rotation={[0, degToRads(90), 0]}>
-          <Torus onClick={()=>{}} args={[0.75,0.25]}>
+          <Torus args={[0.75,0.25]}>
             <meshLambertMaterial color="greenyellow" />
           </Torus>
         </CuboidCollider>
@@ -56,15 +58,18 @@ function SphericalJointTest ({
           </Box>
         </CuboidCollider>
         <CuboidCollider args={[3/2,6.25/2,2/2]} position={[-4, -0.25, -1]}>
-          <Box args={[3,6.25,2]}>
-            <meshLambertMaterial color="hotpink" />
+          <Box args={[3,6.25,2]} onPointerEnter={() => setColor("red")} onPointerLeave={() => setColor("blue")} onClick={(e) => { 
+            terminalRef.current.applyImpulseAtPoint(new Vector3(0,0,1),new Vector3(e.clientX, e.clientY, 0), true)
+          }}>
+            <meshLambertMaterial color={color} />
           </Box>
         </CuboidCollider>
-        {/* <Box args={[3,2,1]} position={[11, -0.25, -1]}></Box> */}
-          <Torus args={[0.75,0.25]} position={[13.5,-0.25,-1]} />
+        <Torus args={[0.75,0.25]} position={[13.5,-0.25,-1]}>
+          <meshPhysicalMaterial transmission={1.0} thickness={1.0} metalness={0.0} roughness={0.3} color="aquamarine" />
+        </Torus>
       </RigidBody>
 
-      <RigidBody ref={armRef} type={rigidBodyType} position={[14,-4,1]} linearDamping={1.0} angularDamping={1.0}>
+      <RigidBody ref={armRef} type={rigidBodyType} position={[13.5,-3.5,1]} linearDamping={1.0} angularDamping={1.0}>
         <Torus args={[0.75,0.25]} position={[0,0.5,-1]} rotation={[0, degToRads(90), 0]}>
           <meshLambertMaterial color="greenyellow" />
         </Torus>
@@ -85,7 +90,7 @@ function SphericalJointTest ({
 function Backdrop () {
   return (
     <Box args={[1000, 1000, 0.5]} position={[0,0,-50]}>
-      <meshLambertMaterial color="#100" />
+      <meshLambertMaterial color="#333" />
     </Box>
   )
 }
@@ -121,7 +126,7 @@ export default function JointsPage() {
         <directionalLight intensity={50} color="pink" position={[0, -5, 5]} />
         <Physics key={physicsKey} debug>
           <SphericalJointTest dynamic={dynamic} />
-          <Pointer />
+          {/* <Pointer /> */}
         </Physics>
         <OrbitControls />
         <CameraControls />
