@@ -1,4 +1,18 @@
 import type p5 from 'p5'
+import { BezierShape } from './types';
+
+export const heart_data: BezierShape = {
+  origin: [24.71, 63.97],
+  vertices: [
+    [24.71, 63.97, 60.01, 60.55, 68.86, 50.54],
+    [77.70, 40.52, 76.75, 25.24, 66.73, 16.40],
+    [60.49, 10.89, 52.20, 9.19, 44.70, 11.11],
+    [40.35, 4.70, 33.01, 0.50, 24.69, 0.50],
+    [11.33, 0.50, 0.50, 11.33, 0.50, 24.69],
+    [0.50, 38.05, 24.71, 63.97, 24.71, 63.97],
+  ],
+  color: 'red',
+}
 
 export default function drawHeart (sketch: p5) {
   sketch.beginShape();

@@ -6,7 +6,7 @@
 type BezierVertex = [number, number, number, number, number, number]
 
 export type BezierShape = {
+  color: string
   origin: [number, number]
   vertices: BezierVertex[]
-  color: string
 }

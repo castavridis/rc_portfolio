@@ -1,4 +1,18 @@
 import p5 from 'p5'
+import { BezierShape } from './types';
+
+export const teardrop_data: BezierShape = {
+  origin: [33.72, 0],
+  vertices: [
+    [30.19, 0, 26.66, 1.63, 24.40, 4.88],
+    [14.42, 19.26, 0, 42.15, 0, 54.32],
+    [0, 72.94, 15.10, 88.04, 33.72, 88.04],
+    [52.34, 88.04, 67.44, 72.94, 67.44, 54.32],
+    [67.44, 42.14, 53.02, 19.25, 43.04, 4.87],
+    [40.78, 1.62, 37.25, -0.01, 33.72, -0.01],
+  ],
+  color: 'lightblue',
+}
 
 export default function drawTeardrop (sketch: p5) {
   sketch.beginShape();

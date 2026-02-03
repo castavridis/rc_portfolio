@@ -1,4 +1,20 @@
 import type p5 from 'p5'
+import { BezierShape } from './types';
+
+export const rectangle_data: BezierShape = {
+  origin: [54.53, 0],
+  vertices: [
+    [54.53, 0, 18.97, 0, 18.97, 0],           // line to (18.97, 0)
+    [8.49, 0, 0, 8.49, 0, 18.97],             // curve to (0, 18.97)
+    [0, 18.97, 0, 54.53, 0, 54.53],           // line to (0, 54.53)
+    [0, 65.01, 8.49, 73.50, 18.97, 73.50],    // curve to (18.97, 73.50)
+    [18.97, 73.50, 54.53, 73.50, 54.53, 73.50], // line to (54.53, 73.50)
+    [65.01, 73.50, 73.50, 65.01, 73.50, 54.53], // curve to (73.50, 54.53)
+    [73.50, 54.53, 73.50, 18.97, 73.50, 18.97], // line to (73.50, 18.97)
+    [73.50, 8.49, 65.01, 0, 54.53, 0],        // curve to (54.53, 0)
+  ],
+  color: 'lightgreen',
+}
 
 export default function drawRectangle (sketch: p5) {
   sketch.beginShape();

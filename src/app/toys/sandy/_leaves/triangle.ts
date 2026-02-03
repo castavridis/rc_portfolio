@@ -1,4 +1,19 @@
 import type p5 from 'p5'
+import { BezierShape } from './types';
+
+export const triangle_data: BezierShape = {
+  origin: [54.79, 0],
+  vertices: [
+    [52.19, 0, 49.55, 0.96, 47.39, 3.12],
+    [47.39, 3.12, 3.12, 47.39, 3.12, 47.39],     // line to (3.12, 47.39)
+    [-3.54, 54.05, 1.18, 65.44, 10.60, 65.44],
+    [10.60, 65.44, 54.88, 65.44, 54.88, 65.44], // line to (54.88, 65.44)
+    [60.72, 65.44, 65.45, 60.71, 65.45, 54.87],
+    [65.45, 54.87, 65.44, 10.59, 65.44, 10.59], // line to (65.44, 10.59)
+    [65.44, 4.22, 60.23, 0, 54.79, 0],
+  ],
+  color: 'cyan',
+}
 
 export default function drawTriangle (sketch: p5) {
   sketch.beginShape()
