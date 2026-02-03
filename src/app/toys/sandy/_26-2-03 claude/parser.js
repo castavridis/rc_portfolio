@@ -1,0 +1,195 @@
+// Calder Parser
+// Recursive descent parser producing AST
+
+export class Parser {
+  constructor(tokens) {
+    this.tokens = tokens;
+    this.pos = 0;
+  }
+  
+  peek() { 
+    return this.tokens[this.pos]; 
+  }
+  
+  advance() { 
+    return this.tokens[this.pos++]; 
+  }
+  
+  expect(type) {
+    const tok = this.advance();
+    if (tok.type !== type) {
+      throw new Error(`Expected ${type}, got ${tok.type}`);
+    }
+    return tok;
+  }
+  
+  match(...types) {
+    if (types.includes(this.peek().type)) {
+      return this.advance();
+    }
+    return null;
+  }
+  
+  parse() { 
+    return this.expr(); 
+  }
+  
+  expr() { 
+    return this.comparison(); 
+  }
+  
+  comparison() {
+    let left = this.additive();
+    while (true) {
+      const op = this.match('LT', 'LE', 'GT', 'GE', 'EQ', 'NE');
+      if (!op) break;
+      const right = this.additive();
+      left = { type: 'BinOp', op: op.type, left, right };
+    }
+    return left;
+  }
+  
+  additive() {
+    let left = this.multiplicative();
+    while (true) {
+      const op = this.match('ADD', 'SUB');
+      if (!op) break;
+      const right = this.multiplicative();
+      left = { type: 'BinOp', op: op.type, left, right };
+    }
+    return left;
+  }
+  
+  multiplicative() {
+    let left = this.unary();
+    while (true) {
+      const op = this.match('MUL', 'DIV');
+      if (!op) break;
+      const right = this.unary();
+      left = { type: 'BinOp', op: op.type, left, right };
+    }
+    return left;
+  }
+  
+  unary() {
+    if (this.match('SUB')) {
+      return { 
+        type: 'BinOp', 
+        op: 'SUB', 
+        left: { type: 'Num', value: 0 }, 
+        right: this.unary() 
+      };
+    }
+    return this.call();
+  }
+  
+  call() {
+    let expr = this.primary();
+    while (this.peek().type === 'LPN') {
+      this.advance();
+      if (this.match('RPN')) {
+        expr = { type: 'App', fn: expr, arg: null };
+      } else {
+        const arg = this.tupleExpr();
+        this.expect('RPN');
+        expr = { type: 'App', fn: expr, arg };
+      }
+    }
+    return expr;
+  }
+  
+  tupleExpr() {
+    let left = this.expr();
+    while (this.match('COMMA')) {
+      const right = this.expr();
+      left = { type: 'Tuple', left, right };
+    }
+    return left;
+  }
+  
+  primary() {
+    if (this.match('LPN')) {
+      const inner = this.tupleExpr();
+      this.expect('RPN');
+      return inner;
+    }
+    if (this.peek().type === 'NUM') {
+      return { type: 'Num', value: parseInt(this.advance().value) };
+    }
+    if (this.peek().type === 'STR') {
+      const s = this.advance().value;
+      return { type: 'Str', value: s.slice(1, -1) };
+    }
+    if (this.peek().type === 'NAM') {
+      const name = this.advance().value;
+      if (name === '_') return { type: 'Wildcard' };
+      return { type: 'Id', name };
+    }
+    if (this.peek().type === 'VAL') {
+      return this.valLav();
+    }
+    if (this.peek().type === 'IF') {
+      return this.ifFi();
+    }
+    throw new Error(`Unexpected token: ${this.peek().type} '${this.peek().value}'`);
+  }
+  
+  statements() {
+    const stmts = [this.statement()];
+    while (this.match('BANG')) {
+      stmts.push(this.statement());
+    }
+    return stmts;
+  }
+  
+  statement() {
+    if (this.match('MATCH')) {
+      return { type: 'Match', expr: this.tupleExpr() };
+    }
+    if (this.match('OF')) {
+      return { type: 'Of', expr: this.expr() };
+    }
+    if (this.match('ECHO')) {
+      return { type: 'Echo', expr: this.expr() };
+    }
+    if (this.match('ASSERT')) {
+      return { type: 'Assert', expr: this.expr() };
+    }
+    
+    // Could be: expr COL expr, expr RCOL expr, expr THEN expr, expr WHEN expr
+    const left = this.tupleExpr();
+    
+    if (this.match('COL')) {
+      const right = this.expr();
+      return { type: 'Binding', name: left, value: right };
+    }
+    if (this.match('RCOL')) {
+      const right = this.tupleExpr();
+      return { type: 'Binding', name: right, value: left };
+    }
+    if (this.match('THEN')) {
+      const right = this.expr();
+      return { type: 'When', pattern: left, result: right };
+    }
+    if (this.match('WHEN')) {
+      const right = this.tupleExpr();
+      return { type: 'When', pattern: right, result: left };
+    }
+    
+    throw new Error(`Invalid statement starting with ${left.type}`);
+  }
+  
+  valLav() {
+    this.expect('VAL');
+    const stmts = this.statements();
+    this.expect('LAV');
+    return { type: 'ValLav', statements: stmts };
+  }
+  
+  ifFi() {
+    this.expect('IF');
+    const stmts = this.statements();
+    this.expect('FI');
+    return { type: 'IfFi', statements: stmts };
+  }
+}
