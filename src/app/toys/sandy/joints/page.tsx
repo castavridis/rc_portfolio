@@ -1,14 +1,24 @@
 'use client'
 
+/** Previous issues, rigid bodies were intersecting with each other creating a jittery experience as the engine tried to resolve the colliding bodies. For spherical or revolute, position the visual mesh where I'd like the joint to seem but place the actual joint on a rigid body well outside the bounds of the body rotating */
+
 import { Box, CameraControls, OrbitControls, Sphere, Torus } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Physics, RigidBody, useSphericalJoint, useRevoluteJoint, CuboidCollider, BallCollider, RigidBodyAutoCollider, RapierRigidBody } from '@react-three/rapier';
 import { useRef, useState } from 'react';
 import { Vector3 } from 'three';
 
+import { MobileProvider } from '../../../components/useMobile';
+import { buildLeafForThree } from '../_leaves/buildLeafForThree';
+import { crescent_data } from '../_leaves/crescent';
+
 function degToRads(degrees: number) {
   return (degrees % 360) * Math.PI / 180
 }
+
+function SandyAnchor () {}
+function SandyTerminalArm () {}
+function SandyArm () {}
 
 function SphericalJointTest ({
   dynamic = false
@@ -19,7 +29,7 @@ function SphericalJointTest ({
   const ceilingRef = useRef<RapierRigidBody>(null)
   const terminalRef = useRef<RapierRigidBody>(null)
   const armRef = useRef<RapierRigidBody>(null)
-  /** Previous issues, rigid bodies were intersecting with each other creating a jittery experience as the engine tried to resolve the colliding bodies. For spherical or revolute, position the visual mesh where I'd like the joint to seem but place the actual joint on a rigid body well outside the bounds of the body rotating */
+
   useSphericalJoint(
     ceilingRef,
     terminalRef,
@@ -32,11 +42,6 @@ function SphericalJointTest ({
   )
   
   const rigidBodyType = dynamic ? "dynamic" : "fixed"
-  // useRevoluteJoint(rigidRef, tBRef, [
-  //   [0,-2,1],
-  //   [0,0,0],
-  //   [0,0,0.1],
-  // ])
   return (
     <>
       <RigidBody ref={ceilingRef} type="fixed" colliders={false}>
@@ -57,19 +62,34 @@ function SphericalJointTest ({
             <meshPhysicalMaterial transmission={1.0} thickness={5.0} metalness={0.0} roughness={0.3} color="hotpink" />
           </Box>
         </CuboidCollider>
+        {/* TODO: Calculate size for collider from extruded mesh */}
         <CuboidCollider args={[3/2,6.25/2,2/2]} position={[-4, -0.25, -1]}>
-          <Box args={[3,6.25,2]} onPointerEnter={() => setColor("red")} onPointerLeave={() => setColor("blue")} onClick={(e) => { 
+          <mesh 
+            position={[0,3,0]}
+            onPointerEnter={() => setColor("red")}
+            onPointerLeave={() => setColor("blue")}
+            onClick={(e) => { 
+              terminalRef.current.applyImpulseAtPoint(new Vector3(0,0,1),new Vector3(e.clientX, e.clientY, 0), true)
+            }}
+            >
+            <meshLambertMaterial color={color} />
+            <extrudeGeometry args={[
+              buildLeafForThree(crescent_data), 
+              {depth: 1}
+            ]} />
+          </mesh>
+          {/* <Box args={[3,6.25,2]} onPointerEnter={() => setColor("red")} onPointerLeave={() => setColor("blue")} onClick={(e) => { 
             terminalRef.current.applyImpulseAtPoint(new Vector3(0,0,1),new Vector3(e.clientX, e.clientY, 0), true)
           }}>
             <meshLambertMaterial color={color} />
-          </Box>
+          </Box> */}
         </CuboidCollider>
         <Torus args={[0.75,0.25]} position={[13.5,-0.25,-1]}>
           <meshPhysicalMaterial transmission={1.0} thickness={1.0} metalness={0.0} roughness={0.3} color="aquamarine" />
         </Torus>
       </RigidBody>
 
-      <RigidBody ref={armRef} type={rigidBodyType} position={[13.5,-3.5,1]} linearDamping={1.0} angularDamping={1.0}>
+      <RigidBody ref={armRef} type={rigidBodyType} position={[13.5,-3.5,1]} linearDamping={0.75} angularDamping={0.5}>
         <Torus args={[0.75,0.25]} position={[0,0.5,-1]} rotation={[0, degToRads(90), 0]}>
           <meshLambertMaterial color="greenyellow" />
         </Torus>
@@ -120,19 +140,21 @@ export default function JointsPage() {
 
   return (
     <div className="w-full h-[80vh]">
-      <Canvas camera={{ position: [0,0,25], fov: 100 }}>
-        <Backdrop />
-        <directionalLight intensity={5} color="goldenrod" position={[0, 10, 5]} />
-        <directionalLight intensity={50} color="pink" position={[0, -5, 5]} />
-        <Physics key={physicsKey} debug>
-          <SphericalJointTest dynamic={dynamic} />
-          {/* <Pointer /> */}
-        </Physics>
-        <OrbitControls />
-        <CameraControls />
-      </Canvas>
-      <button onClick={() => toggleDynamic(!dynamic)}>Toggle Dynamism</button>
-      <button onClick={() => setPhysicsKey(physicsKey+1)}>Reset</button>
+      <MobileProvider>
+        <Canvas camera={{ position: [0,0,25], fov: 100 }}>
+          <Backdrop />
+          <directionalLight intensity={5} color="goldenrod" position={[0, 10, 5]} />
+          <directionalLight intensity={50} color="pink" position={[0, -5, 5]} />
+          <Physics key={physicsKey} debug>
+            <SphericalJointTest dynamic={dynamic} />
+            {/* <Pointer /> */}
+          </Physics>
+          <OrbitControls />
+          <CameraControls />
+        </Canvas>
+        <button onClick={() => toggleDynamic(!dynamic)}>Toggle Dynamism</button>
+        <button onClick={() => setPhysicsKey(physicsKey+1)}>Reset</button>
+      </MobileProvider>
     </div>
   )
 }
